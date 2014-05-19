@@ -10,7 +10,7 @@ import android.widget.TextView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends BaseFragment
+public class PlaceholderFragment extends MenuFragment
 {
 
 	@Override

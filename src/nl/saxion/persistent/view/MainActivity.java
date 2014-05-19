@@ -6,7 +6,10 @@ import nl.saxion.persistent.model.User;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,13 +28,14 @@ public class MainActivity extends Activity
 	 * Used to store the last screen title. For use in {@link #restoreActionBar()}.
 	 */
 	private CharSequence mTitle;
-	
+
 	/**
 	 * The logged in user
 	 * 
 	 */
 	private static User user;
-
+	private static String EMAIL = "email";
+	private static String PASSWORD = "password";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -39,42 +43,59 @@ public class MainActivity extends Activity
 		super.onCreate(savedInstanceState);
 		DB.init(this);
 		setContentView(R.layout.activity_main);
-
-		mNavigationDrawerFragment = (NavigationDrawerFragment)
-				getFragmentManager().findFragmentById(R.id.navigation_drawer);
 		mTitle = getTitle();
-
-		// Set up the drawer.
-		mNavigationDrawerFragment.setUp(
-				R.id.navigation_drawer,
-				(DrawerLayout) findViewById(R.id.drawer_layout));
-		
-		// Hide the drawer when user is not logged in
-		if (user == null)
-			mNavigationDrawerFragment.getView().setVisibility(View.GONE);
+		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
+		if (autoLogin())
+			showNavigation();
+		else
+		{
+			setMainFragment(new LoginFragment());
+			hideNavigation();
+		}
+	}
+	
+	public void showNavigation()
+	{
+		mNavigationDrawerFragment.getView().setVisibility(View.VISIBLE);
+	}
+	
+	public void hideNavigation()
+	{
+		mNavigationDrawerFragment.getView().setVisibility(View.GONE);
+	}
+	
+	/**
+	 * Sets the main fragment for the activity.
+	 * 
+	 * @param fragment
+	 */
+	
+	public void setMainFragment(BaseFragment fragment)
+	{
+		FragmentManager fragmentManager = getFragmentManager();
+		fragmentManager.beginTransaction()
+				.replace(R.id.container, fragment)
+				.commit();
 	}
 
 	@Override
 	public void onNavigationDrawerItemSelected(int position)
 	{
-		// update the main content by replacing fragments
-		FragmentManager fragmentManager = getFragmentManager();
-		fragmentManager.beginTransaction()
-				.replace(R.id.container, BaseFragment.newInstance(position + 1))
-				.commit();
+		setMainFragment(MenuFragment.newInstance(position + 1));
 	}
 
 	public void onSectionAttached(int number)
 	{
 		switch (number)
 		{
-		case 0:
-			mTitle = getString(R.string.title_login);
-			break;
 		case 1:
-			mTitle = getString(R.string.title_section2);
+			mTitle = getString(R.string.title_section1);
 			break;
 		case 2:
+			mTitle = getString(R.string.title_section2);
+			break;
+		case 3:
 			mTitle = getString(R.string.title_section3);
 			break;
 		}
@@ -121,19 +142,31 @@ public class MainActivity extends Activity
 	{
 		return user;
 	}
-
-	/**
-	 * Registers the logged in user a static variable and displays the navigation drawer
-	 * 
-	 * @param user
-	 */
 	
-	public void setUser(User user)
+	public boolean autoLogin()
 	{
-		MainActivity.user = user;
-		mNavigationDrawerFragment.getView().setVisibility(View.VISIBLE);
+		user = null;
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+		String email = sp.getString(EMAIL,null);
+		String password = sp.getString(PASSWORD, null);
+		if (email != null && password != null)
+			return login(email,password);
+		return false;
 	}
 	
-	
+	public boolean login(String email, String password)
+	{
+		User user = User.get(email, password);
+		if (user == null)
+			return false;
+		MainActivity.user = user;
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		editor.putString(EMAIL, email);
+		editor.putString(PASSWORD, password);
+		editor.commit();
+		showNavigation();
+		onNavigationDrawerItemSelected(0);
+		return true;
+	}
 
 }

@@ -3,7 +3,6 @@ package nl.saxion.persistent.view;
 import nl.saxion.persistent.R;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
