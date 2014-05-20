@@ -134,8 +134,7 @@ public class MainActivity extends Activity
 		} 
 		if (id == R.id.action_logout)
 		{
-			user = null;
-			showLoggedOut();
+			logOut();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -144,6 +143,16 @@ public class MainActivity extends Activity
 	public static User getUser()
 	{
 		return user;
+	}
+	
+	public void logOut()
+	{
+		user = null;
+		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		editor.remove(EMAIL);
+		editor.remove(PASSWORD);
+		editor.commit();
+		showLoggedOut();
 	}
 	
 	public boolean autoLogin()
@@ -177,6 +186,7 @@ public class MainActivity extends Activity
 		setMainFragment(new LoginFragment());
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(false);
+		actionBar.setTitle(R.string.title_login);
 	}
 
 }

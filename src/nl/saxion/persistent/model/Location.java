@@ -17,12 +17,13 @@ public class Location {
 	public static Location get(String name) {
 		Cursor cursor = DB.get(
 				"SELECT name, capacity FROM Locations WHERE name = ?", name);
-		if (cursor.moveToFirst())
-			return new Location(cursor);
-		return null;
+		Location location = cursor.moveToFirst() ? new Location(cursor) : null;
+		cursor.close();
+		return location;
 	}
+	
 	/**
-	 * Get all Locations
+	 * Get a list of Locations from database
 	 * 
 	 * Returns empty list when no locations found
 	 * 
@@ -31,12 +32,12 @@ public class Location {
 	public static List<Location> getAll() {
 		Cursor cursor = DB.get("SELECT name, capacity FROM Locations");
 		List<Location> locationList = new ArrayList<Location>();
-		cursor.moveToFirst();
-		if (!cursor.isAfterLast()) {
+		if (cursor.moveToFirst()) {
 			do {
 				locationList.add(new Location(cursor));
 			} while (cursor.moveToNext());
 		}
+		cursor.close();
 		return locationList;
 	}
 
