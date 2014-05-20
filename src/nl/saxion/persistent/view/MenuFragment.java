@@ -22,7 +22,7 @@ public class MenuFragment extends BaseFragment
 		switch (sectionNumber)
 		{
 		case 1:
-			fragment = new PlaceholderFragment();
+			fragment = new LocationListFragment();
 			break;
 		case 2:
 			fragment = new PlaceholderFragment();
