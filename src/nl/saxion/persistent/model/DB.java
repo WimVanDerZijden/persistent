@@ -16,7 +16,7 @@ public class DB extends SQLiteOpenHelper
 
 	private DB(Context context)
 	{
-		super(context, "Persistent3", null, 1);
+		super(context, "Persistent4", null, 1);
 		this.context = context;
 	}
 

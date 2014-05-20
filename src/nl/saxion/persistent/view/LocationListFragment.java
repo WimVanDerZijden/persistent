@@ -1,6 +1,9 @@
 package nl.saxion.persistent.view;
 
+import java.util.List;
+
 import nl.saxion.persistent.R;
+import nl.saxion.persistent.model.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +18,8 @@ public class LocationListFragment extends MenuFragment {
 	{
 		View rootView = inflater.inflate(R.layout.fragment_location_list, container, false);
 		ListView locationList = (ListView) rootView.findViewById(R.id.loction_list);
-		String[] locationArray = {"1", "2", "3"};
-		locationList.setAdapter(new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_list_item_1, locationArray));
+		List<Location> locations = Location.getAll(); 
+		locationList.setAdapter(new ArrayAdapter<Location>(this.getActivity(), android.R.layout.simple_list_item_1, locations));
 		return rootView;
 	}
 }

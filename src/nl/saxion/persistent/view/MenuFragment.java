@@ -22,13 +22,13 @@ public class MenuFragment extends BaseFragment
 		switch (sectionNumber)
 		{
 		case 1:
-			fragment = new LocationListFragment();
+			fragment = new EventListFragment();
 			break;
 		case 2:
-			fragment = new PlaceholderFragment();
+			fragment = new LocationListFragment();
 			break;
 		case 3:
-			fragment = new PlaceholderFragment();
+			fragment = new PeopleListFragment();
 			break;
 		}
 		Bundle args = new Bundle();
