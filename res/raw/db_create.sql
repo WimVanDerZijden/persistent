@@ -13,4 +13,6 @@ CREATE TABLE Locations
 INSERT INTO User (name, email, password)
 VALUES ('wim','wim@wim.com','wim');
 INSERT INTO Locations (name, capacity)
-VALUES ('megazaal', 100), ('pizzazaal', 20);
+VALUES ('megazaal', 100);
+INSERT INTO Locations (name, capacity)
+VALUES ('pizzazaal', 20);

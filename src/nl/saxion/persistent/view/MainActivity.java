@@ -50,8 +50,7 @@ public class MainActivity extends Activity
 			showNavigation();
 		else
 		{
-			setMainFragment(new LoginFragment());
-			hideNavigation();
+			showLoggedOut();
 		}
 	}
 	
@@ -59,11 +58,6 @@ public class MainActivity extends Activity
 	{
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
 		mNavigationDrawerFragment.getView().setVisibility(View.VISIBLE);
-	}
-	
-	public void hideNavigation()
-	{
-		mNavigationDrawerFragment.getView().setVisibility(View.GONE);
 	}
 	
 	/**
@@ -137,6 +131,12 @@ public class MainActivity extends Activity
 			Intent intent = new Intent(this, SettingsActivity.class);
 			startActivity(intent);
 			return true;
+		} 
+		if (id == R.id.action_logout)
+		{
+			user = null;
+			showLoggedOut();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -170,6 +170,13 @@ public class MainActivity extends Activity
 		showNavigation();
 		onNavigationDrawerItemSelected(0);
 		return true;
+	}
+	
+	public void showLoggedOut()
+	{
+		setMainFragment(new LoginFragment());
+		ActionBar actionBar = getActionBar();
+		actionBar.setHomeButtonEnabled(false);
 	}
 
 }
