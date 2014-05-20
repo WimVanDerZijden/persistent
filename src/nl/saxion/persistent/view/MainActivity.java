@@ -45,7 +45,6 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
 		if (autoLogin())
 			showNavigation();
 		else
@@ -57,6 +56,7 @@ public class MainActivity extends Activity
 	
 	public void showNavigation()
 	{
+		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
 		mNavigationDrawerFragment.getView().setVisibility(View.VISIBLE);
 	}
 	
@@ -151,7 +151,7 @@ public class MainActivity extends Activity
 		String password = sp.getString(PASSWORD, null);
 		if (email != null && password != null)
 			return login(email,password);
-		return false;
+		return false; 
 	}
 	
 	public boolean login(String email, String password)
