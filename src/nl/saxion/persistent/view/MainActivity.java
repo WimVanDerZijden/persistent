@@ -93,6 +93,9 @@ public class MainActivity extends Activity
 		case 3:
 			mTitle = getString(R.string.title_section3);
 			break;
+		case 4:
+			mTitle = getString(R.string.title_section4);
+			break;
 		}
 	}
 
@@ -112,9 +115,17 @@ public class MainActivity extends Activity
 			// Only show items in the action bar relevant to this screen
 			// if the drawer is not showing. Otherwise, let the drawer
 			// decide what to show in the action bar.
-			if(mTitle.equals("Events")){
+			
+			if (mTitle.equals(getString(R.string.title_section1))){
 				getMenuInflater().inflate(R.menu.event, menu);
+			} else if (mTitle.equals(getString(R.string.title_section2))){
+				
+			} else if (mTitle.equals(getString(R.string.title_section3))){
+				
+			} else if (mTitle.equals(getString(R.string.title_section4))){
+				
 			}
+				
 			getMenuInflater().inflate(R.menu.main, menu);
 			restoreActionBar();
 			return true;
