@@ -30,7 +30,11 @@ public class MenuFragment extends BaseFragment
 		case 3:
 			fragment = new PeopleListFragment();
 			break;
+		case 4: 
+			fragment = new ProfileFragment();
+			break;
 		}
+		
 		Bundle args = new Bundle();
 		args.putInt(ARG_SECTION_NUMBER, sectionNumber);
 		fragment.setArguments(args);
