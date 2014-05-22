@@ -1,6 +1,5 @@
 package nl.saxion.persistent.view;
 
-import nl.saxion.persistent.CreateEventActivity;
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.DB;
 import nl.saxion.persistent.model.User;
