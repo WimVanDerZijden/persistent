@@ -7,9 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
-        android:layout_margin="5dp"
-        android:background="#FFF">
+        android:layout_height="wrap_content" >
 
         <ImageButton
             android:id="@+id/imageButton1"
@@ -17,80 +15,120 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/drawer_shadow" />
-
+            android:paddingBottom="16dp"
+    		android:paddingLeft="16dp"
+   			android:paddingRight="16dp"
+   			android:paddingTop="16dp"
+            android:src="@drawable/empty_profile_picture" />
+     
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFF"
-        android:layout_margin="5dp" >
+        android:layout_marginTop="10dp"
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/change_name_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Name" />
-         
-         <View 
-            android:background="#05F"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:textColor="#05F" 
+            android:text="@string/profile_namefield"/>
+
+        <View
             android:layout_width="fill_parent"
-    		android:layout_height="2dp"
-    		android:layout_below="@id/change_name_textview"/>
+            android:layout_height="2dp"
+            android:layout_margin="5dp"
+            android:background="#05F" />
 
-        <Button
-            android:id="@+id/change_name_button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="change" />
+            android:background="#FFF" >
 
-        <TextView
-            android:id="@+id/name_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/change_name_textview"
-            android:text="@string/account_name" />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/change_name_button"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="8dp"
+    			android:paddingLeft="8dp"
+   				android:paddingRight="8dp"
+   				android:paddingTop="8dp" />
 
-    <RelativeLayout
+            <TextView
+                android:id="@+id/name_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/change_name_button"
+                android:layout_alignBottom="@+id/change_name_button"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:text="@string/account_name"
+                android:textStyle="bold" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#FFF"
-        android:layout_margin="5dp" >
+        android:layout_marginTop="10dp"
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/change_password_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:text="Password" />
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="3dp"
+            android:textColor="#05F" 
+            android:text= "@string/profile_passwordfield" />
         
-       
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_margin="5dp"
+            android:background="#05F" />
 
-        <TextView
-            android:id="@+id/password_textview"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/change_password_textview"
-            android:layout_below="@+id/change_password_textview"
-            android:text="**********" />
+            android:background="#FFF" >
 
-        <Button
-            android:id="@+id/change_password_button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="Change" />
-    </RelativeLayout>
+            <Button
+                android:id="@+id/change_password_button"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:paddingBottom="8dp"
+    			android:paddingLeft="8dp"
+   				android:paddingRight="8dp"
+   				android:paddingTop="8dp"
+                 />
+
+            <TextView
+                android:id="@+id/password_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/change_password_button"
+                android:layout_alignBottom="@+id/change_password_button"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:text="@string/profile_password" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

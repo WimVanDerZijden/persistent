@@ -17,4 +17,8 @@
     <string name="title_activity_create_event">CreateEventActivity</string>
     <string name="hello_world">Hello world!</string>
 
+    <string name="profile_namefield">Name</string>
+    <string name="profile_passwordfield">Password</string>
+    <string name="profile_password">********</string>
+    
 </resources>
