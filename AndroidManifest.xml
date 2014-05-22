@@ -26,6 +26,11 @@
             android:name="nl.saxion.persistent.view.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
+        <activity
+            android:name="nl.saxion.persistent.CreateEventActivity"
+            android:label="@string/title_activity_create_event"
+            android:theme="@android:style/Theme.Holo.Dialog" >
+        </activity>
     </application>
 
 </manifest>

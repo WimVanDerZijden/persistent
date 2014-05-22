@@ -1,5 +1,6 @@
 package nl.saxion.persistent.view;
 
+import nl.saxion.persistent.CreateEventActivity;
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.DB;
 import nl.saxion.persistent.model.User;
@@ -151,7 +152,18 @@ public class MainActivity extends Activity
 			logOut();
 			return true;
 		}
+		if (id == R.id.action_create_event){
+			createEvent();
+		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	/**
+	 * Will create a dialog where the user can fill in info for a new event.
+	 */
+	public void createEvent(){
+		Intent intent = new Intent(this, CreateEventActivity.class);
+		startActivityForResult(intent, 0);
 	}
 
 	public static User getUser()
