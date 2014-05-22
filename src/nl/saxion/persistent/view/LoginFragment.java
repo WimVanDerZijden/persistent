@@ -11,7 +11,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginFragment extends BaseFragment
+public class LoginFragment extends MenuFragment
 {
 
 	// Values for email and password at the time of the login attempt.

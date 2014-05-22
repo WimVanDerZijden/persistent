@@ -1,9 +1,10 @@
 package nl.saxion.persistent.view;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 
-public class MenuFragment extends BaseFragment
+public class MenuFragment extends Fragment
 {
 
 	/**
@@ -15,6 +16,8 @@ public class MenuFragment extends BaseFragment
 	/**
 	 * Returns a new instance of this fragment for the given section
 	 * number.
+	 * 
+	 * Section numbers of 100 and up are not displayed in the drawer
 	 */
 	public static MenuFragment newInstance(int sectionNumber)
 	{
@@ -32,6 +35,9 @@ public class MenuFragment extends BaseFragment
 			break;
 		case 4: 
 			fragment = new ProfileFragment();
+			break;
+		case 100:
+			fragment = new LoginFragment();
 			break;
 		}
 		

@@ -49,9 +49,7 @@ public class MainActivity extends Activity
 		if (autoLogin())
 			showNavigation();
 		else
-		{
-			showLoggedOut();
-		}
+			logOut();
 	}
 	
 	public void showNavigation()
@@ -66,7 +64,7 @@ public class MainActivity extends Activity
 	 * @param fragment
 	 */
 	
-	public void setMainFragment(BaseFragment fragment)
+	public void setMainFragment(MenuFragment fragment)
 	{
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
@@ -96,6 +94,9 @@ public class MainActivity extends Activity
 		case 4:
 			mTitle = getString(R.string.title_section4);
 			break;
+		case 100:
+			mTitle = getString(R.string.title_login);
+			break;
 		}
 	}
 
@@ -115,18 +116,21 @@ public class MainActivity extends Activity
 			// Only show items in the action bar relevant to this screen
 			// if the drawer is not showing. Otherwise, let the drawer
 			// decide what to show in the action bar.
+			int menuId = -1;
+			if (mTitle.equals(getString(R.string.title_section1)))
+				menuId = R.menu.event;
+			else if (mTitle.equals(getString(R.string.title_section2)))
+				menuId = R.menu.main;
+			else if (mTitle.equals(getString(R.string.title_section3)))
+				menuId = R.menu.main;
+			else if (mTitle.equals(getString(R.string.title_section4)))
+				menuId = R.menu.main;
+			else if (mTitle.equals(getString(R.string.title_login)))
+				menuId = R.menu.login;
+			else
+				menuId = R.menu.global;
 			
-			if (mTitle.equals(getString(R.string.title_section1))){
-				getMenuInflater().inflate(R.menu.event, menu);
-			} else if (mTitle.equals(getString(R.string.title_section2))){
-				
-			} else if (mTitle.equals(getString(R.string.title_section3))){
-				
-			} else if (mTitle.equals(getString(R.string.title_section4))){
-				
-			}
-				
-			getMenuInflater().inflate(R.menu.main, menu);
+			getMenuInflater().inflate(menuId, menu);
 			restoreActionBar();
 			return true;
 		}
@@ -177,7 +181,9 @@ public class MainActivity extends Activity
 		editor.remove(EMAIL);
 		editor.remove(PASSWORD);
 		editor.commit();
-		showLoggedOut();
+		setMainFragment(MenuFragment.newInstance(100));
+		mNavigationDrawerFragment.getView().setVisibility(View.GONE);
+		invalidateOptionsMenu();
 	}
 	
 	public boolean autoLogin()
@@ -203,15 +209,8 @@ public class MainActivity extends Activity
 		editor.commit();
 		showNavigation();
 		onNavigationDrawerItemSelected(0);
+		invalidateOptionsMenu();
 		return true;
 	}
 	
-	public void showLoggedOut()
-	{
-		setMainFragment(new LoginFragment());
-		ActionBar actionBar = getActionBar();
-		actionBar.setHomeButtonEnabled(false);
-		actionBar.setTitle(R.string.title_login);
-	}
-
 }
