@@ -7,16 +7,22 @@ import nl.saxion.persistent.R;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class DB extends SQLiteOpenHelper
 {
+	/**
+	 * Increment when DB script is changed
+	 */
+	private static final int DB_VERSION = 1; 
 	private Context context;
 	private static DB db_helper;
 
 	private DB(Context context)
 	{
-		super(context, "Persistent5", null, 1);
+		super(context, "Persistent", null, DB_VERSION);
 		this.context = context;
 	}
 
@@ -86,6 +92,9 @@ public class DB extends SQLiteOpenHelper
 	 * 
 	 * All terminators (;) must be at the end of a line.
 	 * 
+	 * SQLiteErrors are logged as a warning.
+	 * They don't prevent the full script from being executed.
+	 * 
 	 * @param db
 	 * @param rawResourceId
 	 */
@@ -96,10 +105,17 @@ public class DB extends SQLiteOpenHelper
 		String sql = "";
 		while (s.hasNext())
 		{
-			sql += "\n" + s.nextLine();
+			sql += " " + s.nextLine();
 			if (sql.endsWith(";"))
 			{
-				db.execSQL(sql);
+				try
+				{
+					db.execSQL(sql);
+				}
+				catch (SQLiteException e)
+				{
+					Log.w("DB","SQL failed: " + e.getMessage());
+				}
 				sql = "";
 			}
 		}
@@ -115,6 +131,13 @@ public class DB extends SQLiteOpenHelper
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
 	{
-		throw new IllegalStateException("Upgrade not implemented");
+		runScript(db, R.raw.db_create);
 	}
+
+	@Override
+	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
+	{
+		runScript(db, R.raw.db_create);
+	}
+
 }
