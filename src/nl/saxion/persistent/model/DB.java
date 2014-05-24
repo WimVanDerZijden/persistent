@@ -90,6 +90,9 @@ public class DB extends SQLiteOpenHelper
 	/**
 	 * Runs the provided raw resource as a script that doesn't return anything.
 	 * 
+	 * Warning: this is a not a foolproof SQL script interpreter.
+	 * 
+	 * Please note:
 	 * All terminators (;) must be at the end of a line.
 	 * 
 	 * SQLiteErrors are logged as a warning.
@@ -100,7 +103,8 @@ public class DB extends SQLiteOpenHelper
 	 */
 	public void runScript(SQLiteDatabase db, int rawResourceId)
 	{
-		InputStream in = context.getResources().openRawResource(R.raw.db_create);
+		Log.i("DB", "Running SQL script");
+		InputStream in = context.getResources().openRawResource(rawResourceId);
 		Scanner s = new Scanner(in);
 		String sql = "";
 		while (s.hasNext())

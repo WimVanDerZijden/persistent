@@ -136,10 +136,6 @@ public class NavigationDrawerFragment extends Fragment
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		// set up the drawer's list view with items and click listener
 
-		ActionBar actionBar = getActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
-		actionBar.setHomeButtonEnabled(true);
-
 		// ActionBarDrawerToggle ties together the the proper interactions
 		// between the navigation drawer and the action bar app icon.
 		mDrawerToggle = new ActionBarDrawerToggle(
@@ -308,5 +304,21 @@ public class NavigationDrawerFragment extends Fragment
 		 * Called when an item in the navigation drawer is selected.
 		 */
 		void onNavigationDrawerItemSelected(int position);
+	}
+
+	/**
+	 * Enables/Disables the naviation drawer
+	 * 
+	 * @param on
+	 */
+	
+	public void toggle(boolean on)
+	{
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(on);
+		actionBar.setHomeButtonEnabled(on);
+		mDrawerLayout.setDrawerLockMode(on ?
+				DrawerLayout.LOCK_MODE_UNLOCKED :
+					DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 	}
 }

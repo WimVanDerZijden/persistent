@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 public class LoginFragment extends MenuFragment
 {
+	/** Minimum length of a password */
+	private static final int PASSWORD_MIN_LENGTH = 1;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -79,7 +81,7 @@ public class LoginFragment extends MenuFragment
 			focusView = mPasswordView;
 			cancel = true;
 		}
-		else if (mPassword.length() < 3)
+		else if (mPassword.length() < PASSWORD_MIN_LENGTH)
 		{
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;

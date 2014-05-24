@@ -12,9 +12,9 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 public class MainActivity extends Activity
 		implements NavigationDrawerFragment.NavigationDrawerCallbacks
@@ -34,9 +34,9 @@ public class MainActivity extends Activity
 	 * The logged in user
 	 * 
 	 */
-	private static User user;
-	private static String EMAIL = "email";
-	private static String PASSWORD = "password";
+	private static User sUser;
+	private static final String EMAIL = "email";
+	private static final String PASSWORD = "password";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -46,16 +46,9 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 		mTitle = getTitle();
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
-		if (autoLogin())
-			showNavigation();
-		else
-			logOut();
-	}
-	
-	public void showNavigation()
-	{
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
-		mNavigationDrawerFragment.getView().setVisibility(View.VISIBLE);
+		if (!autoLogin())
+			logOut();
 	}
 	
 	/**
@@ -80,6 +73,7 @@ public class MainActivity extends Activity
 
 	public void onSectionAttached(int number)
 	{
+		Log.i("MainActivity","onSectionAttached:" + number);
 		switch (number)
 		{
 		case 1:
@@ -98,6 +92,8 @@ public class MainActivity extends Activity
 			mTitle = getString(R.string.title_login);
 			break;
 		}
+		// Ask to rebuild option menu when new fragment attached 
+		invalidateOptionsMenu();
 	}
 
 	public void restoreActionBar()
@@ -111,6 +107,7 @@ public class MainActivity extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		Log.i("MainActivity","onCreateOptionsMenu:" + mTitle);
 		if (!mNavigationDrawerFragment.isDrawerOpen())
 		{
 			// Only show items in the action bar relevant to this screen
@@ -171,30 +168,30 @@ public class MainActivity extends Activity
 
 	public static User getUser()
 	{
-		return user;
+		return sUser;
 	}
 	
 	public void logOut()
 	{
-		user = null;
+		sUser = null;
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		editor.remove(EMAIL);
 		editor.remove(PASSWORD);
 		editor.commit();
 		setMainFragment(MenuFragment.newInstance(100));
-		mNavigationDrawerFragment.getView().setVisibility(View.GONE);
-		invalidateOptionsMenu();
+		mNavigationDrawerFragment.toggle(false);
 	}
 	
 	public boolean autoLogin()
 	{
-		user = null;
+		if (sUser != null)
+			return true;
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-		String email = sp.getString(EMAIL,null);
+		String email = sp.getString(EMAIL, null);
 		String password = sp.getString(PASSWORD, null);
 		if (email != null && password != null)
-			return login(email,password);
-		return false; 
+			return login(email, password);
+		return false;
 	}
 	
 	public boolean login(String email, String password)
@@ -202,14 +199,13 @@ public class MainActivity extends Activity
 		User user = User.get(email, password);
 		if (user == null)
 			return false;
-		MainActivity.user = user;
+		MainActivity.sUser = user;
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		editor.putString(EMAIL, email);
 		editor.putString(PASSWORD, password);
 		editor.commit();
-		showNavigation();
 		onNavigationDrawerItemSelected(0);
-		invalidateOptionsMenu();
+		mNavigationDrawerFragment.toggle(true);
 		return true;
 	}
 	

@@ -1,5 +1,8 @@
 package nl.saxion.persistent.view;
 
+import java.util.List;
+
+import nl.saxion.persistent.R;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -18,12 +21,6 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 import android.view.MenuItem;
-
-import java.util.List;
-
-import nl.saxion.persistent.R;
-import nl.saxion.persistent.R.string;
-import nl.saxion.persistent.R.xml;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
