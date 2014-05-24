@@ -200,6 +200,15 @@ public class NavigationDrawerFragment extends Fragment
 
 		mDrawerLayout.setDrawerListener(mDrawerToggle);
 	}
+	
+	/**
+	 * Switch to the currently selected item
+	 * 
+	 */
+	public void selectItem()
+	{
+		selectItem(mCurrentSelectedPosition);
+	}
 
 	private void selectItem(int position)
 	{

@@ -13,7 +13,6 @@
     <string name="action_settings">Settings</string>
     <string name="action_logout">Sign Out</string>
     <string name="title_login">Login</string>
-    <string name="account_name">Name</string>
     <string name="title_activity_create_event">CreateEventActivity</string>
     <string name="hello_world">Hello world!</string>
 
@@ -21,4 +20,14 @@
     <string name="profile_passwordfield">Password</string>
     <string name="profile_password">********</string>
     
+    <string name="change_name">Change Name</string>
+    <string name="change_password">Change Password</string>
+    
+    <string name="current_password">Current Password</string>
+    <string name="new_password">New Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    
+    <string name="error_invalid_name">Invalid Name</string>
+    <string name="error_password_failed">Failed to update password</string>
+    <string name="password_success">Password updated</string>
 </resources>

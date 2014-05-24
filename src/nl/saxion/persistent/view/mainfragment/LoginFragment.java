@@ -1,6 +1,7 @@
-package nl.saxion.persistent.view;
+package nl.saxion.persistent.view.mainfragment;
 
 import nl.saxion.persistent.R;
+import nl.saxion.persistent.view.MainActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -11,10 +12,10 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class LoginFragment extends MenuFragment
+public class LoginFragment extends MainFragment
 {
 	/** Minimum length of a password */
-	private static final int PASSWORD_MIN_LENGTH = 1;
+	public static final int PASSWORD_MIN_LENGTH = 1;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -55,6 +56,7 @@ public class LoginFragment extends MenuFragment
 					@Override
 					public void onClick(View view)
 					{
+						((MainActivity) getActivity()).hideKeyBoard();
 						attemptLogin();
 					}
 				});

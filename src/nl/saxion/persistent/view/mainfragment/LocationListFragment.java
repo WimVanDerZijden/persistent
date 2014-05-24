@@ -1,4 +1,4 @@
-package nl.saxion.persistent.view;
+package nl.saxion.persistent.view.mainfragment;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class LocationListFragment extends MenuFragment {
+public class LocationListFragment extends MainFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)

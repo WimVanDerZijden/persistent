@@ -68,6 +68,7 @@ public class DB extends SQLiteOpenHelper
 	public static Cursor get(String sql, Object... params)
 	{
 		SQLiteDatabase db = db_helper.getReadableDatabase();
+		Log.i("DB","SQL=" + sql);
 		return db.rawQuery(sql, objectsToString(params));
 	}
 
@@ -85,12 +86,38 @@ public class DB extends SQLiteOpenHelper
 	{
 		SQLiteDatabase db = db_helper.getWritableDatabase();
 		db.execSQL(sql, params);
+		Log.i("DB","SQL=" + sql);
+	}
+	
+	/**
+	 * Same as doIt(), except this returns the number of
+	 * affected rows.
+	 * 
+	 * @param table
+	 * @param params
+	 * @return
+	 */
+	
+	public static int doItCount(String sql, Object... params)
+	{
+		SQLiteDatabase db = db_helper.getWritableDatabase();
+		db.execSQL(sql, params);
+		// "The changes() function returns the number of database rows that were changed or inserted or deleted by
+		// the most recently completed INSERT, DELETE, or UPDATE statement, exclusive of statements in lower-level triggers."
+		// source: http://www.sqlite.org/lang_corefunc.html#changes
+		Cursor cursor = db.rawQuery("SELECT CHANGES()",null);
+		cursor.moveToFirst();
+		int count = cursor.getInt(0);
+		cursor.close();
+		Log.i("DB","SQL=" + sql);
+		Log.i("DB","Rows affected: " + count);
+		return count;
 	}
 
 	/**
 	 * Runs the provided raw resource as a script that doesn't return anything.
 	 * 
-	 * Warning: this is a not a foolproof SQL script interpreter.
+	 * Warning: this is a NOT a foolproof SQL script interpreter.
 	 * 
 	 * Please note:
 	 * All terminators (;) must be at the end of a line.

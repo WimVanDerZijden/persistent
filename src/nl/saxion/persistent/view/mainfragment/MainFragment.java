@@ -1,10 +1,19 @@
-package nl.saxion.persistent.view;
+package nl.saxion.persistent.view.mainfragment;
 
+import nl.saxion.persistent.view.MainActivity;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 
-public class MenuFragment extends Fragment
+/**
+ * Every fragment that is used as a main fragment in the activity
+ * should inherit this class and be added to the newInstance() method
+ * with a unique identifier. 
+ * 
+ *
+ */
+
+public class MainFragment extends Fragment
 {
 
 	/**
@@ -19,9 +28,9 @@ public class MenuFragment extends Fragment
 	 * 
 	 * Section numbers of 100 and up are not displayed in the drawer
 	 */
-	public static MenuFragment newInstance(int sectionNumber)
+	public static MainFragment newInstance(int sectionNumber)
 	{
-		MenuFragment fragment = null;
+		MainFragment fragment = null;
 		switch (sectionNumber)
 		{
 		case 1:

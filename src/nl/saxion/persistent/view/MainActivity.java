@@ -3,9 +3,11 @@ package nl.saxion.persistent.view;
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.DB;
 import nl.saxion.persistent.model.User;
+import nl.saxion.persistent.view.mainfragment.MainFragment;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -15,6 +17,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 public class MainActivity extends Activity
 		implements NavigationDrawerFragment.NavigationDrawerCallbacks
@@ -47,7 +51,9 @@ public class MainActivity extends Activity
 		mTitle = getTitle();
 		mNavigationDrawerFragment = (NavigationDrawerFragment) getFragmentManager().findFragmentById(R.id.navigation_drawer);
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,(DrawerLayout) findViewById(R.id.drawer_layout));
-		if (!autoLogin())
+		if (autoLogin())
+			mNavigationDrawerFragment.toggle(true);
+		else
 			logOut();
 	}
 	
@@ -57,7 +63,7 @@ public class MainActivity extends Activity
 	 * @param fragment
 	 */
 	
-	public void setMainFragment(MenuFragment fragment)
+	public void setMainFragment(MainFragment fragment)
 	{
 		FragmentManager fragmentManager = getFragmentManager();
 		fragmentManager.beginTransaction()
@@ -68,7 +74,7 @@ public class MainActivity extends Activity
 	@Override
 	public void onNavigationDrawerItemSelected(int position)
 	{
-		setMainFragment(MenuFragment.newInstance(position + 1));
+		setMainFragment(MainFragment.newInstance(position + 1));
 	}
 
 	public void onSectionAttached(int number)
@@ -178,7 +184,7 @@ public class MainActivity extends Activity
 		editor.remove(EMAIL);
 		editor.remove(PASSWORD);
 		editor.commit();
-		setMainFragment(MenuFragment.newInstance(100));
+		setMainFragment(MainFragment.newInstance(100));
 		mNavigationDrawerFragment.toggle(false);
 	}
 	
@@ -204,9 +210,25 @@ public class MainActivity extends Activity
 		editor.putString(EMAIL, email);
 		editor.putString(PASSWORD, password);
 		editor.commit();
-		onNavigationDrawerItemSelected(0);
+		mNavigationDrawerFragment.selectItem();
 		mNavigationDrawerFragment.toggle(true);
 		return true;
+	}
+	
+	public void hideKeyBoard()
+	{
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		View v = getCurrentFocus();
+		if (v != null)
+			imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+	}
+	
+	public void showKeyBoard()
+	{
+		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		View v = getCurrentFocus();
+		if (v != null)
+			imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);		
 	}
 	
 }

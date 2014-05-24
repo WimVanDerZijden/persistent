@@ -1,4 +1,4 @@
-package nl.saxion.persistent.view;
+package nl.saxion.persistent.view.mainfragment;
 
 import nl.saxion.persistent.R;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import android.widget.TextView;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class PlaceholderFragment extends MenuFragment
+public class PlaceholderFragment extends MainFragment
 {
 
 	@Override
