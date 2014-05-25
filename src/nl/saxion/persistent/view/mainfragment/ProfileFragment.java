@@ -75,6 +75,7 @@ public class ProfileFragment extends MainFragment
 		return rootView;
 	}
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (requestCode == IMAGE_PICKER_SELECT && resultCode == Activity.RESULT_OK)
@@ -150,7 +151,6 @@ public class ProfileFragment extends MainFragment
 		alertDialog.show();
 		Window window = alertDialog.getWindow();
 		window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-
 	}
 
 	/**
