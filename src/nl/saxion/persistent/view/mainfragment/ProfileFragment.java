@@ -60,6 +60,9 @@ public class ProfileFragment extends MainFragment
 					}
 				});
 		mImage = (ImageButton) rootView.findViewById(R.id.imageButton1);
+		Bitmap photo = MainActivity.getUser().getPhoto();
+		if (photo != null)
+			mImage.setImageBitmap(photo);
 		mImage.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -86,7 +89,10 @@ public class ProfileFragment extends MainFragment
 				double factor = IMAGE_MAX_SIZE / max;
 				bitmap = Bitmap.createScaledBitmap(bitmap, (int) (width * factor), (int) (height * factor), false);
 			}
-			mImage.setImageBitmap(bitmap);
+			if (MainActivity.getUser().setPhoto(bitmap))
+				mImage.setImageBitmap(bitmap);
+			else
+				Toast.makeText(getActivity(), R.string.error_save_image, Toast.LENGTH_SHORT).show();			
 		}
 	}
 

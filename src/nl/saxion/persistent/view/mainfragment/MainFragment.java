@@ -65,4 +65,5 @@ public class MainFragment extends Fragment
 		if (section > 0)
 			((MainActivity) activity).onSectionAttached(section);
 	}
+
 }
