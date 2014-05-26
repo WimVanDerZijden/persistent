@@ -4,6 +4,7 @@ import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.DB;
 import nl.saxion.persistent.model.User;
 import nl.saxion.persistent.view.mainfragment.MainFragment;
+import nl.saxion.persistent.view.mainfragment.RegisterDialogFragment;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -158,12 +159,23 @@ public class MainActivity extends Activity
 			logOut();
 			return true;
 		}
+		if (id == R.id.action_register){
+			register();
+			return true;
+		}
 		if (id == R.id.action_create_event){
 			createEvent();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
+	private void register() {
+		RegisterDialogFragment registerDialog = new RegisterDialogFragment();
+		registerDialog.show(getFragmentManager(), "Test");
+		
+	}
+
 	/**
 	 * Will create a dialog where the user can fill in info for a new event.
 	 */

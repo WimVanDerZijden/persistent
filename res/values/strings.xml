@@ -20,6 +20,7 @@
     <string name="profile_namefield">Name</string>
     <string name="profile_passwordfield">Password</string>
     <string name="profile_password">********</string>
+    <string name="profile_email">Email</string>
     
     <string name="change_name">Change Name</string>
     <string name="change_password">Change Password</string>
