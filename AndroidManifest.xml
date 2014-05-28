@@ -28,8 +28,7 @@
         </activity>
         <activity
             android:name="nl.saxion.persistent.view.CreateEventActivity"
-            android:label="@string/title_activity_create_event"
-            android:theme="@android:style/Theme.Holo.Light.Dialog.MinWidth" >
+            android:label="@string/title_activity_create_event" >
         </activity>
     </application>
 
