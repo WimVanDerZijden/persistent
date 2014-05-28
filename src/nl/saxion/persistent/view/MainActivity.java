@@ -189,6 +189,11 @@ public class MainActivity extends Activity
 		return sUser;
 	}
 	
+	public static void setUser(User user)
+	{
+		sUser = user;
+	}
+	
 	public void logOut()
 	{
 		sUser = null;

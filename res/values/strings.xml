@@ -33,4 +33,6 @@
     <string name="error_password_failed">Failed to update password</string>
     <string name="password_success">Password updated</string>
     <string name="error_save_image">Image could not be saved</string>
+    <string name="register_success">Registration successful</string>
+    <string name="register_failed">Registration failed</string>
 </resources>
