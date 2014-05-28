@@ -85,6 +85,7 @@ public class DB extends SQLiteOpenHelper
 	public static void doIt(String sql, Object... params)
 	{
 		SQLiteDatabase db = db_helper.getWritableDatabase();
+		db.execSQL("PRAGMA foreign_keys = ON");
 		db.execSQL(sql, params);
 		Log.i("DB","SQL=" + sql);
 	}

@@ -1,6 +1,8 @@
 package nl.saxion.persistent.model;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import nl.saxion.persistent.view.MainActivity;
 import nl.saxion.persistent.view.mainfragment.LoginFragment;
@@ -28,29 +30,42 @@ public class User {
 	 * @return
 	 */
 	public static User get(String email, String password) {
-		Cursor cursor = DB
-				.get("SELECT name, email, photo FROM User WHERE Email = ? AND password = ?",
-						email, password);
+		Cursor cursor = DB.get("SELECT name, email, photo FROM User WHERE Email = ? AND password = ?",
+				email, password);
 		User user = cursor.moveToFirst() ? new User(cursor) : null;
 		cursor.close();
 		return user;
 	}
 
-	public static boolean register(String name, String email, String password) {
-		if (password == null || password.length() < LoginFragment.PASSWORD_MIN_LENGTH)
-			return false;
+	public static List<User> getAll()
+	{
+		Cursor cursor = DB.get("SELECT name, email, photo FROM User");
+		List<User> userList = new ArrayList<User>();
+		if (cursor.moveToFirst()) {
+			do {
+				userList.add(new User(cursor));
+			}
+			while (cursor.moveToNext());
+		}
+		cursor.close();
+		return userList;
+	}
+
+	public static User register(String name, String email, String password) {
+		if (password == null || password.length() < LoginFragment.PASSWORD_MIN_LENGTH
+				|| email == null || email.length() < 1 || !email.contains("@")
+				|| name == null || name.length() < 1)
+			return null;
 		try {
 			DB.doIt("INSERT INTO User (name,email,password) VALUES (?,?,?)",
 					name, email, password);
-			User user = get(email,password);
-			MainActivity.setUser(user);
-			return true;
-		} catch (SQLiteException e) {
-			Log.i("User","Can't register user: " + e.getMessage());
-			return false;
+			User user = get(email, password);
+			return user;
 		}
-		
-		
+		catch (SQLiteException e) {
+			Log.i("User", "Can't register user: " + e.getMessage());
+			return null;
+		}
 	}
 
 	private User(Cursor cursor) {
@@ -59,10 +74,9 @@ public class User {
 		try {
 			byte[] photo_bytes = cursor.getBlob(2);
 			if (photo_bytes != null && photo_bytes.length > 0)
-				;
-			photo = BitmapFactory.decodeByteArray(photo_bytes, 0,
-					photo_bytes.length);
-		} catch (Exception e) {
+				photo = BitmapFactory.decodeByteArray(photo_bytes, 0, photo_bytes.length);
+		}
+		catch (Exception e) {
 			Log.i("User", "Could not load photo: " + e.getMessage());
 		}
 	}
@@ -86,7 +100,8 @@ public class User {
 			DB.doIt("UPDATE User SET Name = ? WHERE Email = ?", name, email);
 			this.name = name;
 			return true;
-		} catch (SQLiteException e) {
+		}
+		catch (SQLiteException e) {
 			Log.e("User", "SQL failed: " + e.getMessage());
 			return false;
 		}
@@ -112,14 +127,19 @@ public class User {
 		try {
 			ByteArrayOutputStream blob = new ByteArrayOutputStream();
 			bitmap.compress(CompressFormat.PNG, 0, blob);
-			DB.doIt("UPDATE User SET photo = ? WHERE email = ?",
-					blob.toByteArray(), email);
+			DB.doIt("UPDATE User SET photo = ? WHERE email = ?", blob.toByteArray(), email);
 			photo = bitmap;
 			return true;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Log.e("User", "Failed to save photo in db: " + e.getMessage());
 			return false;
 		}
+	}
+	
+	public String toString()
+	{
+		return "name=" +name + ", email=" + email; 
 	}
 
 }

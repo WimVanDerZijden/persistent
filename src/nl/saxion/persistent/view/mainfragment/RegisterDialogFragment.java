@@ -2,6 +2,7 @@ package nl.saxion.persistent.view.mainfragment;
 
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.User;
+import nl.saxion.persistent.view.MainActivity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -30,7 +31,10 @@ public class RegisterDialogFragment extends DialogFragment{
 	            	   String email = ((EditText) view.findViewById(R.id.register_email)).getText().toString();
 	            	   String password = ((EditText) view.findViewById(R.id.register_password)).getText().toString();
 	            	   String name = ((EditText) view.findViewById(R.id.register_name)).getText().toString();
-	            	   if (User.register(name,email,password)) {
+	            	   User user = User.register(name, email, password);
+	            	   if (user != null)
+	            	   {
+	            		   ((MainActivity) getActivity()).setUser(user);
 	            		   Toast.makeText(getActivity(), R.string.register_success, Toast.LENGTH_SHORT).show();
 	            	   }
 	            	   else

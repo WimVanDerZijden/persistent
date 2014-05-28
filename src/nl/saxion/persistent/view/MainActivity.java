@@ -189,9 +189,11 @@ public class MainActivity extends Activity
 		return sUser;
 	}
 	
-	public static void setUser(User user)
+	public void setUser(User user)
 	{
 		sUser = user;
+		mNavigationDrawerFragment.selectItem();
+		mNavigationDrawerFragment.toggle(true);
 	}
 	
 	public void logOut()
@@ -222,13 +224,11 @@ public class MainActivity extends Activity
 		User user = User.get(email, password);
 		if (user == null)
 			return false;
-		MainActivity.sUser = user;
+		setUser(user);
 		Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 		editor.putString(EMAIL, email);
 		editor.putString(PASSWORD, password);
 		editor.commit();
-		mNavigationDrawerFragment.selectItem();
-		mNavigationDrawerFragment.toggle(true);
 		return true;
 	}
 	

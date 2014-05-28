@@ -87,4 +87,10 @@ public class Event {
 		return datetime3;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+	
 }
