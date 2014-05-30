@@ -31,7 +31,10 @@
     <string name="error_save_image">Image could not be saved</string>
     <string name="register_success">Registration successful</string>
     <string name="register_failed">Registration failed</string>
-    <string name="hello_world">Hello world!</string>
     <string name="title_activity_create_new_event">CreateNewEventActivity</string>
+    <string name="event_name_field">Event name</string>
+    <string name="event_type">Event type</string>
+    <string name="from_text_view">From</string>
+    <string name="to_text_view">To</string>
 
 </resources>

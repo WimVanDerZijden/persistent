@@ -4,34 +4,114 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="nl.saxion.persistent.view.CreateEventActivity"
-    tools:ignore="MergeRootFrame" >
+    tools:ignore="MergeRootFrame"
+    android:background="#DDD" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
-
-    <EditText
-        android:id="@+id/editText1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" >
+        android:layout_height="wrap_content" >
 
-        <requestFocus />
-    </EditText>
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/cancel" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/ok" />
 
-    <EditText
-        android:id="@+id/editText2"
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" />
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#FFF" >
+
+            <EditText
+                android:id="@+id/editText1"
+                android:hint="@string/event_name_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:layout_margin="8dp" >
+
+                <requestFocus />
+            </EditText>
+
+            <Spinner
+                android:id="@+id/event_type_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:entries="@array/event_types" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/from_text_view"
+                android:layout_marginLeft="8dp" />
+			
+            <LinearLayout 
+                android:layout_width="match_parent"
+          		android:layout_height="wrap_content"
+            	android:orientation="horizontal"
+            	android:background="#FFF"
+            	android:layout_margin="8dp">
+                
+            <Spinner
+                android:id="@+id/date1_from_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <Spinner
+                android:id="@+id/time1_from_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+            
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/to_text_view"
+                android:layout_marginLeft="8dp" />
+
+            <LinearLayout 
+                android:layout_width="match_parent"
+          		android:layout_height="wrap_content"
+            	android:orientation="horizontal"
+            	android:background="#FFF"
+            	android:layout_margin="8dp">
+                
+            <Spinner
+                android:id="@+id/date1_to_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+            <Spinner
+                android:id="@+id/time1_to_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" />
+            
+            </LinearLayout>
+            
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
 
