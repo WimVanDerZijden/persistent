@@ -39,6 +39,10 @@ public class Event {
 	public int getId() {
 		return id;
 	}
+	
+	public static boolean createEvent(String name, Long datetime, int duration, int maxparticipants, int minparticipants, String description){
+		return false;
+	}
 
 	public static List<Event> getAll() {
 		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id FROM Event");

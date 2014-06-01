@@ -17,7 +17,8 @@
             android:id="@+id/cancel_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@android:string/cancel" />
+            android:text="@android:string/cancel"
+            android:onClick="cancelButtonPressed" />
 
         <Button
             style="?android:attr/buttonBarButtonStyle"
@@ -25,7 +26,8 @@
             android:id="@+id/ok_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@android:string/ok" />
+            android:text="@android:string/ok"
+            android:onClick="okButtonPressed" />
 
     </LinearLayout>
 
@@ -36,12 +38,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#FFF" >
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/event_name_field"
                 android:hint="@string/event_name_field"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,10 +60,17 @@
                 android:layout_margin="8dp"
                 android:entries="@array/event_types" />
 
+            <EditText
+                android:id="@+id/event_description_field"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/event_description_field" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/from_text_view"
+                android:text="@string/date_text_view"
                 android:layout_marginLeft="8dp" />
 			
             <LinearLayout 
@@ -71,42 +80,84 @@
             	android:background="#FFF"
             	android:layout_margin="8dp">
                 
-            <Spinner
-                android:id="@+id/date1_from_spinner"
+            <TextView
+                android:id="@+id/date1_view"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
-            <Spinner
-                android:id="@+id/time1_from_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:onClick="date1Pressed" />
             
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/to_text_view"
-                android:layout_marginLeft="8dp" />
-
+            
             <LinearLayout 
                 android:layout_width="match_parent"
           		android:layout_height="wrap_content"
             	android:orientation="horizontal"
             	android:background="#FFF"
             	android:layout_margin="8dp">
-                
-            <Spinner
-                android:id="@+id/date1_to_spinner"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/from_text_view"
+                android:layout_marginLeft="8dp" />   
+            <TextView
+                android:id="@+id/time1_from_view"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" />
-            <Spinner
-                android:id="@+id/time1_to_spinner"
+                android:layout_weight="1"
+                android:onClick="time1FromPressed" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/to_text_view"
+                android:layout_marginLeft="8dp" />
+            <TextView
+                android:id="@+id/time1_to_view"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="1" 
+                android:onClick="time1ToPressed"/>
+            
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nr_of_participants_field"
+                android:layout_margin="8dp" />
+            
+            <LinearLayout 
+                android:layout_width="match_parent"
+          		android:layout_height="wrap_content"
+            	android:orientation="horizontal"
+            	android:background="#FFF"
+            	android:layout_margin="8dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/min_text_view"
+                android:layout_marginLeft="8dp" />   
+            <TextView
+                android:id="@+id/min_nr_view"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="minNrPressed" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/max_text_view"
+                android:layout_marginLeft="8dp" />
+            <TextView
+                android:id="@+id/max_nr_view"
+                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" 
+                android:onClick="maxNrPressed"/>
             
             </LinearLayout>
             
