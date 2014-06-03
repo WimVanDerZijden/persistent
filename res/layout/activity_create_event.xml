@@ -139,25 +139,27 @@
                 android:layout_height="wrap_content"
                 android:text="@string/min_text_view"
                 android:layout_marginLeft="8dp" />   
-            <TextView
-                android:id="@+id/min_nr_view"
-                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+            <EditText
+                android:id="@+id/min_nr_field"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="minNrPressed" />
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/max_text_view"
                 android:layout_marginLeft="8dp" />
-            <TextView
-                android:id="@+id/max_nr_view"
-                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+            <EditText
+                android:id="@+id/max_nr_field"
+                android:inputType="number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1" 
-                android:onClick="maxNrPressed"/>
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_weight="1" />
             
             </LinearLayout>
             

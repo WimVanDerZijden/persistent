@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
+import android.util.Log;
+import android.widget.Toast;
 
 public class Event {
 	private int id;
@@ -41,7 +44,15 @@ public class Event {
 	}
 	
 	public static boolean createEvent(String name, Long datetime, int duration, int maxparticipants, int minparticipants, String description){
-		return false;
+		try {
+			DB.doIt("INSERT INTO Event (name,duration,maxparticipants,minparticipants,description,datetime) VALUES (?,?,?,?,?,?)"
+					, name, duration, maxparticipants, minparticipants, description, datetime);
+			Log.i("Event", "Event created");
+			return true;
+		} catch (SQLiteException e){
+			Log.i("Event", "SQLiteException: " + e.toString());
+			return false;
+		}
 	}
 
 	public static List<Event> getAll() {

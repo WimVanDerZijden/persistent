@@ -5,17 +5,21 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import nl.saxion.persistent.R;
+import nl.saxion.persistent.model.Event;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class CreateEventActivity extends Activity implements
 		DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
@@ -24,6 +28,8 @@ public class CreateEventActivity extends Activity implements
 	private TextView dateField;
 	private TextView timeFromField;
 	private TextView timeToField;
+	private EditText maxNrField;
+	private EditText minNrField;
 	private EditText eventNameField;
 	private EditText eventDescriptionField;
 	private int timeFromMinutes;
@@ -46,6 +52,8 @@ public class CreateEventActivity extends Activity implements
 		dateField = (TextView) findViewById(R.id.date1_view);
 		timeFromField = (TextView) findViewById(R.id.time1_from_view);
 		timeToField = (TextView) findViewById(R.id.time1_to_view);
+		maxNrField = (EditText) findViewById(R.id.max_nr_field);
+		minNrField =(EditText) findViewById(R.id.min_nr_field);
 		eventNameField = (EditText) findViewById(R.id.event_name_field);
 		eventDescriptionField = (EditText) findViewById(R.id.event_description_field);
 		DateFormat df = DateFormat.getDateInstance();
@@ -59,7 +67,7 @@ public class CreateEventActivity extends Activity implements
 	 * Shows the datepicker dialog
 	 * 
 	 * @param dateNr
-	 *            which field is clicked
+	 * which field is clicked
 	 */
 	public void showDatePicker(int dateNr) {
 		updateFieldNr = dateNr;
@@ -115,11 +123,12 @@ public class CreateEventActivity extends Activity implements
 		if (updateFieldNr == 0) {
 			date.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			date.set(Calendar.MINUTE, minute);
+			timeFromMinutes = hourOfDay * 60 + minute;
+			timeFromField.setText("" + hourOfDay + ":" + minute);
+		} else {
 			timeToMinutes = hourOfDay * 60 + minute;
-			timeFromField.setText("" + hourOfDay + ":" + minute);
-		} else
 			timeToField.setText("" + hourOfDay + ":" + minute);
-			timeFromField.setText("" + hourOfDay + ":" + minute);
+		}
 	}
 
 	public void date1Pressed(View v) {
@@ -135,11 +144,37 @@ public class CreateEventActivity extends Activity implements
 	}
 
 	public void minNrPressed(View v) {
-		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			}).create();
+			builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					
+				}
+			}).create();
+			builder.show();
 	}
 
 	public void maxNrPressed(View v) {
-		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+			}
+		}).create();
+		builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				
+			}
+		}).create();
+		builder.show();
 	}
 
 	public void cancelButtonPressed(View v) {
@@ -149,10 +184,19 @@ public class CreateEventActivity extends Activity implements
 	public void okButtonPressed(View v){
 		String name = eventNameField.getText().toString();
 		Long datetime = date.getTimeInMillis();
-		int duration = timeFromMinutes - timeToMinutes;
-		if (!name.equals("") && duration > 0){
-			//Event.createEvent(name, datetime, duration, maxparticipants, minparticipants, description);
+		int duration = timeToMinutes - timeFromMinutes;
+		String description = eventDescriptionField.getText().toString();
+		if(minNrField.getText() != null && minNrField.getText() != null && !name.equals("") && duration > 0){
+			int maxparticipants = Integer.parseInt(minNrField.getText().toString());
+			int minparticipants = Integer.parseInt(maxNrField.getText().toString());
+			if(Event.createEvent(name, datetime, duration, maxparticipants, minparticipants, description))
+				Toast.makeText(this, "Event created", Toast.LENGTH_SHORT).show();
+			else
+				Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
+		} else {
+			Toast.makeText(this, "Incorert values, event not created", Toast.LENGTH_LONG).show();
 		}
+		
 		onBackPressed();
 	}
 }
