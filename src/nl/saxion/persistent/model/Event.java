@@ -6,13 +6,12 @@ import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
-import android.widget.Toast;
 
 public class Event {
 	private int id;
 	private String name;
 	private Long datetime;
-	private Integer duration;
+	private Long duration;
 	private Integer maxparticipants; 
 	private Integer minparticipants;
 	
@@ -26,7 +25,7 @@ public class Event {
 	private Event(Cursor cursor) {
 		name = cursor.getString(0);
 		datetime = cursor.getLong(1);
-		duration = cursor.getInt(2);
+		duration = cursor.getLong(2);
 		maxparticipants = cursor.getInt(3);
 		minparticipants = cursor.getInt(4);
 		description = cursor.getString(5);
@@ -34,16 +33,13 @@ public class Event {
 		datetime2 = cursor.getLong(7);
 		datetime3 = cursor.getLong(8);
 		id = cursor.getInt(9);
-		
-		
-		
 	}
 
 	public int getId() {
 		return id;
 	}
 	
-	public static boolean createEvent(String name, Long datetime, int duration, int maxparticipants, int minparticipants, String description){
+	public static boolean createEvent(String name, Long datetime, Long duration, Integer maxparticipants, Integer minparticipants, String description){
 		try {
 			DB.doIt("INSERT INTO Event (name,duration,maxparticipants,minparticipants,description,datetime) VALUES (?,?,?,?,?,?)"
 					, name, duration, maxparticipants, minparticipants, description, datetime);
@@ -74,7 +70,7 @@ public class Event {
 		return datetime;
 	}
 
-	public Integer getDuration() {
+	public Long getDuration() {
 		return duration;
 	}
 

@@ -2,7 +2,6 @@ package nl.saxion.persistent.view;
 
 import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.Event;
@@ -14,6 +13,7 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,7 +24,6 @@ import android.widget.Toast;
 public class CreateEventActivity extends Activity implements
 		DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-	int updateFieldNr;
 	private TextView dateField;
 	private TextView timeFromField;
 	private TextView timeToField;
@@ -32,11 +31,17 @@ public class CreateEventActivity extends Activity implements
 	private EditText minNrField;
 	private EditText eventNameField;
 	private EditText eventDescriptionField;
-	private int timeFromMinutes;
-	private int timeToMinutes;
+	private DialogFragment current_dialog;
 	
 	private static Calendar date;
-
+	private static Calendar timeFrom;
+	private static Calendar timeTo;
+	
+	private DialogType dialogType;
+	
+	private enum DialogType { Date, TimeTo, TimeFrom };
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,6 +54,7 @@ public class CreateEventActivity extends Activity implements
 	@Override
 	public void onStart() {
 		super.onStart();
+		Log.e("CreateEvent","onStart");
 		dateField = (TextView) findViewById(R.id.date1_view);
 		timeFromField = (TextView) findViewById(R.id.time1_from_view);
 		timeToField = (TextView) findViewById(R.id.time1_to_view);
@@ -57,10 +63,22 @@ public class CreateEventActivity extends Activity implements
 		eventNameField = (EditText) findViewById(R.id.event_name_field);
 		eventDescriptionField = (EditText) findViewById(R.id.event_description_field);
 		DateFormat df = DateFormat.getDateInstance();
-		if (date == null) {
-			date = new GregorianCalendar();
-		}
-		dateField.setText(df.format(date.getTime()));
+		DateFormat tf = DateFormat.getTimeInstance();
+		if (date != null)
+			dateField.setText(df.format(date.getTime()));
+		if (timeFrom != null)
+			timeFromField.setText(tf.format(timeFrom.getTime()));
+		if (timeTo != null)
+			timeToField.setText(tf.format(timeTo.getTime()));
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		// Avoid trying to recreate the open dialog on screen rotation,
+		// which will fail and cause a crash.
+		if (current_dialog != null)
+			current_dialog.dismiss();
 	}
 
 	/**
@@ -69,78 +87,92 @@ public class CreateEventActivity extends Activity implements
 	 * @param dateNr
 	 * which field is clicked
 	 */
-	public void showDatePicker(int dateNr) {
-		updateFieldNr = dateNr;
-		DialogFragment d = new DialogFragment() {
+	public void showDatePicker(final DialogType dialogType) {
+		this.dialogType = dialogType;
+		current_dialog = new DialogFragment() {
 			@Override
 			public Dialog onCreateDialog(Bundle savedInstanceState) {
-				// Use the current date as the default date in the picker
-				final Calendar c = Calendar.getInstance();
-				int year = c.get(Calendar.YEAR);
-				int month = c.get(Calendar.MONTH);
-				int day = c.get(Calendar.DAY_OF_MONTH);
-
 				// Create a new instance of DatePickerDialog and return it
-				return new DatePickerDialog(getActivity(),
-						CreateEventActivity.this, year, month, day);
+				// TODO impl. diff. dates
+				Calendar c = date == null ? Calendar.getInstance() : date;
+				return new DatePickerDialog(getActivity(), CreateEventActivity.this,
+						c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
 			}
 		};
-		d.show(getFragmentManager(), "datePicker");
+		current_dialog.show(getFragmentManager(), "datePicker");
 	}
 
 	@Override
-	public void onDateSet(DatePicker view, int year, int monthOfYear,
-			int dayOfMonth) {
-		date = new GregorianCalendar();
-		date.clear();
+	public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+		if (date == null) {
+			date = Calendar.getInstance();
+			date.clear();
+		}
 		date.set(year, monthOfYear, dayOfMonth);
 		DateFormat df = DateFormat.getDateInstance();
 		dateField.setText(df.format(date.getTime()));
 	}
 
-	public void showTimePicker(int timeNr) {
-		updateFieldNr = timeNr;
-		DialogFragment d = new DialogFragment() {
+	public void showTimePicker(final DialogType dialogType) {
+		this.dialogType = dialogType;
+		current_dialog = new DialogFragment() {
 			@Override
 			public Dialog onCreateDialog(Bundle savedInstanceState) {
-				// Use the current time as the default values for the picker
-				final Calendar c = Calendar.getInstance();
+				
+				Calendar c = null;
+				if (dialogType == DialogType.TimeFrom)
+					c = timeFrom == null ? Calendar.getInstance() : timeFrom;
+				else if (dialogType == DialogType.TimeTo)
+					c = timeTo == null ? Calendar.getInstance() : timeTo;
+					
 				int hour = c.get(Calendar.HOUR_OF_DAY);
 				int minute = c.get(Calendar.MINUTE);
 
 				// Create a new instance of TimePickerDialog and return it
-				return new TimePickerDialog(getActivity(),
-						CreateEventActivity.this, hour, minute,
-						android.text.format.DateFormat
-								.is24HourFormat(getActivity()));
+				return new TimePickerDialog(getActivity(), CreateEventActivity.this, hour, minute,
+						android.text.format.DateFormat.is24HourFormat(getActivity()));
 			}
 		};
-		d.show(getFragmentManager(), "datePicker");
+		current_dialog.show(getFragmentManager(), "datePicker");
 	}
 
 	@Override
 	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-		if (updateFieldNr == 0) {
-			date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-			date.set(Calendar.MINUTE, minute);
-			timeFromMinutes = hourOfDay * 60 + minute;
-			timeFromField.setText("" + hourOfDay + ":" + minute);
-		} else {
-			timeToMinutes = hourOfDay * 60 + minute;
-			timeToField.setText("" + hourOfDay + ":" + minute);
-		}
+		Calendar updatedTime = null;
+		TextView timeField = null; 
+		if (dialogType == DialogType.TimeFrom) {
+			if (timeFrom == null) {
+				timeFrom = Calendar.getInstance();
+				timeFrom.clear();
+			}
+			updatedTime = timeFrom;
+			timeField = timeFromField;
+		} else if (dialogType == DialogType.TimeTo) {
+			if (timeTo == null) {
+				timeTo = Calendar.getInstance();
+				timeTo.clear();
+			}
+			updatedTime = timeTo;
+			timeField = timeToField;
+		} else
+			throw new IllegalStateException("Unknown TimePicker DialogType: " + dialogType);
+
+		updatedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		updatedTime.set(Calendar.MINUTE, minute);
+		DateFormat tf = DateFormat.getTimeInstance();
+		timeField.setText(tf.format(updatedTime.getTime()));
 	}
 
 	public void date1Pressed(View v) {
-		showDatePicker(0);
+		showDatePicker(DialogType.Date);
 	}
 
 	public void time1FromPressed(View v) {
-		showTimePicker(0);
+		showTimePicker(DialogType.TimeFrom);
 	}
 
 	public void time1ToPressed(View v) {
-		showTimePicker(1);
+		showTimePicker(DialogType.TimeTo);
 	}
 
 	public void minNrPressed(View v) {
@@ -178,25 +210,69 @@ public class CreateEventActivity extends Activity implements
 	}
 
 	public void cancelButtonPressed(View v) {
+		reset();
 		onBackPressed();
 	}
 
 	public void okButtonPressed(View v){
+		boolean valid = true;
+		View requestfocus = null;
+		
 		String name = eventNameField.getText().toString();
-		Long datetime = date.getTimeInMillis();
-		int duration = timeToMinutes - timeFromMinutes;
+		if (name.length() == 0) {
+			eventNameField.setError("Name is required");
+			requestfocus = eventNameField;
+			valid = false;
+		}
+		Long datetime = null;
+		Long duration = null;
+		if (date != null) {
+			if (timeFrom != null) {
+				date.set(Calendar.HOUR_OF_DAY, timeFrom.get(Calendar.HOUR_OF_DAY));
+				date.set(Calendar.MINUTE, timeFrom.get(Calendar.MINUTE));
+				if (timeTo != null)
+					duration = timeTo.getTimeInMillis() - timeFrom.getTimeInMillis();
+			}
+			datetime = date.getTimeInMillis();
+		}
+		if (duration != null && duration <= 0) {
+			timeToField.setError("Time To must be higher than Time From");
+			requestfocus = timeToField;
+			valid = false;
+		}
 		String description = eventDescriptionField.getText().toString();
-		if(minNrField.getText() != null && minNrField.getText() != null && !name.equals("") && duration > 0){
-			int maxparticipants = Integer.parseInt(minNrField.getText().toString());
-			int minparticipants = Integer.parseInt(maxNrField.getText().toString());
-			if(Event.createEvent(name, datetime, duration, maxparticipants, minparticipants, description))
+		Integer minParticipants = null;
+		Integer maxParticipants = null;
+		if (minNrField.getText().length() > 0)
+			minParticipants = Integer.parseInt(maxNrField.getText().toString());
+		if (maxNrField.getText().length() > 0)
+			maxParticipants = Integer.parseInt(minNrField.getText().toString());
+		if (maxParticipants != null && minParticipants != null && maxParticipants < minParticipants) {
+			maxNrField.setError("Max Participants must be higher than or equal to Min Participants");
+			requestfocus = maxNrField;
+			valid = false;
+		}
+		
+		if(valid){
+			if(Event.createEvent(name, datetime, duration, maxParticipants, minParticipants, description))
 				Toast.makeText(this, "Event created", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
-		} else {
-			Toast.makeText(this, "Incorert values, event not created", Toast.LENGTH_LONG).show();
+			reset();
+			onBackPressed();
 		}
-		
-		onBackPressed();
+		else
+			requestfocus.requestFocus();
+	}
+	
+	/**
+	 * This resets the static variables.
+	 * 
+	 */
+	private void reset()
+	{
+		date = null;
+		timeTo = null;
+		timeFrom = null;
 	}
 }
