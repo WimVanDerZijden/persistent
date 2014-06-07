@@ -15,7 +15,6 @@ public class Event {
 	private Integer maxparticipants; 
 	private Integer minparticipants;
 	
-
 	private String description;
 	
 	private Long datetime1;

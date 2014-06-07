@@ -244,9 +244,9 @@ public class CreateEventActivity extends Activity implements
 		Integer minParticipants = null;
 		Integer maxParticipants = null;
 		if (minNrField.getText().length() > 0)
-			minParticipants = Integer.parseInt(maxNrField.getText().toString());
+			minParticipants = Integer.parseInt(minNrField.getText().toString());
 		if (maxNrField.getText().length() > 0)
-			maxParticipants = Integer.parseInt(minNrField.getText().toString());
+			maxParticipants = Integer.parseInt(maxNrField.getText().toString());
 		if (maxParticipants != null && minParticipants != null && maxParticipants < minParticipants) {
 			maxNrField.setError("Max Participants must be higher than or equal to Min Participants");
 			requestfocus = maxNrField;
