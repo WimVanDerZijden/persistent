@@ -13,7 +13,7 @@ import android.os.Bundle;
  *
  */
 
-public class MainFragment extends Fragment
+public abstract class MainFragment extends Fragment
 {
 
 	/**
