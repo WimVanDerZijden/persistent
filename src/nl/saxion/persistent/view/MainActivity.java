@@ -172,7 +172,7 @@ public class MainActivity extends Activity
 	
 	private void register() {
 		RegisterDialogFragment registerDialog = new RegisterDialogFragment();
-		registerDialog.show(getFragmentManager(), "Test");
+		registerDialog.show(getFragmentManager(), "Register Dialog");
 		
 	}
 

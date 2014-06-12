@@ -82,6 +82,10 @@ public class ProfileFragment extends MainFragment
 		{
 			Bitmap bitmap = getBitmapFromCameraData(data, getActivity());
 			// Crop image if width or height higher than IMAGE_MAX_SIZE
+			if (bitmap == null) {
+				Toast.makeText(getActivity(), "Could not load image", Toast.LENGTH_LONG).show();
+				return;
+			}
 			int width = bitmap.getWidth();
 			int height = bitmap.getHeight();
 			int max = width > height ? width : height;
