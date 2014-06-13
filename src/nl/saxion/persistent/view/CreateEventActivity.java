@@ -21,6 +21,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+/**
+ * Class to create Event
+ * 
+ * TODO TimeFrom/TimeTo is only saved if Date is filled in
+ * Fix this by disabling/hiding Time fields when date is not filled in 
+ * 
+ * @author EINv1u2
+ *
+ */
 public class CreateEventActivity extends Activity implements
 		DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
@@ -79,6 +88,12 @@ public class CreateEventActivity extends Activity implements
 		// which will fail and cause a crash.
 		if (current_dialog != null)
 			current_dialog.dismiss();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		reset();
+		super.onBackPressed();
 	}
 
 	/**
@@ -159,7 +174,7 @@ public class CreateEventActivity extends Activity implements
 
 		updatedTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		updatedTime.set(Calendar.MINUTE, minute);
-		DateFormat tf = DateFormat.getTimeInstance();
+		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 		timeField.setText(tf.format(updatedTime.getTime()));
 	}
 
@@ -210,7 +225,6 @@ public class CreateEventActivity extends Activity implements
 	}
 
 	public void cancelButtonPressed(View v) {
-		reset();
 		onBackPressed();
 	}
 
@@ -258,7 +272,6 @@ public class CreateEventActivity extends Activity implements
 				Toast.makeText(this, "Event created", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
-			reset();
 			onBackPressed();
 		}
 		else
