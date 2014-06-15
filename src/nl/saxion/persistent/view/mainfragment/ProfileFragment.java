@@ -1,15 +1,15 @@
 package nl.saxion.persistent.view.mainfragment;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.view.MainActivity;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -80,12 +80,20 @@ public class ProfileFragment extends MainFragment
 	{
 		if (requestCode == IMAGE_PICKER_SELECT && resultCode == Activity.RESULT_OK)
 		{
-			Bitmap bitmap = getBitmapFromCameraData(data, getActivity());
-			// Crop image if width or height higher than IMAGE_MAX_SIZE
-			if (bitmap == null) {
+			Uri imageUri = data.getData();
+			Bitmap bitmap;
+			try {
+				bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), imageUri);
+			} catch (FileNotFoundException e) {
 				Toast.makeText(getActivity(), "Could not load image", Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+				return;
+			} catch (IOException e) {
+				Toast.makeText(getActivity(), "Could not load image", Toast.LENGTH_LONG).show();
+				e.printStackTrace();
 				return;
 			}
+			// Crop image if width or height higher than IMAGE_MAX_SIZE
 			int width = bitmap.getWidth();
 			int height = bitmap.getHeight();
 			int max = width > height ? width : height;
@@ -101,25 +109,6 @@ public class ProfileFragment extends MainFragment
 		}
 	}
 
-	/**
-	 * Magically transforms a Uri into a Bitmap
-	 * 
-	 * @param intent
-	 * @param context
-	 * @return
-	 */
-	
-	public static Bitmap getBitmapFromCameraData(Intent intent, Context context)
-	{
-		Uri selectedImage = intent.getData();
-		String[] filePathColumn = { MediaStore.Images.Media.DATA };
-		Cursor cursor = context.getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-		cursor.moveToFirst();
-		int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-		String picturePath = cursor.getString(columnIndex);
-		cursor.close();
-		return BitmapFactory.decodeFile(picturePath);
-	}
 
 	private void createPasswordDialog()
 	{
