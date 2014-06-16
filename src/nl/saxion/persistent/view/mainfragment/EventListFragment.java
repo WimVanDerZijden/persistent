@@ -13,35 +13,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.SimpleExpandableListAdapter;
+import android.widget.Toast;
 
 public class EventListFragment extends MainFragment {
 	List<Event> events;
+	List<HashMap<String, Object>> groupList;
+	List<ArrayList<HashMap<String, String>>> childList;
+	SimpleExpandableListAdapter sela;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
 		ExpandableListView eventList = (ExpandableListView) rootView.findViewById(R.id.event_list);
 		events = Event.getAll();
-		eventList.setAdapter(new SimpleExpandableListAdapter(
-				this.getActivity(), createGroupList(), // Creating group List.
+		groupList = createGroupList();
+		childList = createChildList();
+		sela = new SimpleExpandableListAdapter(
+				this.getActivity(),
+				groupList, // Creating group List.
 				R.layout.group_row, // Group item layout XML.
-				new String[] { "Group Item" }, // the key of group item.
-				new int[] { R.id.row_name }, // ID of each group item. -Data under the key goes into this TextView.
-				createChildList(), // childData describes second-level entries.
+				new String[] { "Group Item","G2" }, // the key of group item.
+				new int[] { R.id.row_name, R.id.row_name2 }, // ID of each group item. -Data under the key goes into this TextView.
+				childList, // childData describes second-level entries.
 				R.layout.child_row, // Layout for sub-level entries(second level).
 				new String[] { "Sub Item" }, // Keys in childData maps to display.
 				new int[] { R.id.grp_child } // Data under the keys above go into these TextViews.
-				));
+				);
+		eventList.setAdapter(sela);
+		// To update adapter:
+		//sela.notifyDataSetChanged();
 		return rootView;
 	}
 
-	private List<HashMap<String, String>> createGroupList() {
-		ArrayList<HashMap<String, String>> result = new ArrayList<HashMap<String, String>>();
-		List<Event> events = Event.getAll();
-		for (int i = 0; i < events.size(); ++i) { // 15 groups........
-			HashMap<String, String> m = new HashMap<String, String>();
-			m.put("Group Item", events.get(i).toString()); // the key and it's
-															// value.
+	private List<HashMap<String, Object>> createGroupList() {
+		ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
+		//List<Event> events = Event.getAll();
+		for (int i = 0; i < events.size(); ++i) { 
+			HashMap<String, Object> m = new HashMap<String, Object>();
+			m.put("Group Item", events.get(i).toString());
+			m.put("G2","test");
 			result.add(m);
 		}
 		return result;

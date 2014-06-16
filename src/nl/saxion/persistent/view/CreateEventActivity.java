@@ -63,7 +63,6 @@ public class CreateEventActivity extends Activity implements
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.e("CreateEvent","onStart");
 		dateField = (TextView) findViewById(R.id.date1_view);
 		timeFromField = (TextView) findViewById(R.id.time1_from_view);
 		timeToField = (TextView) findViewById(R.id.time1_to_view);
