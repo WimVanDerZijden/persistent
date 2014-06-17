@@ -41,5 +41,8 @@
     <string name="nr_of_participants_field">Number of participants</string>
     <string name="min_text_view">Min</string>
     <string name="max_text_view">Max</string>
+    <string name="more_details">More Details</string>
+    <string name="people">People Currently Signed up</string>
+    <string name="sign_up">Sign Up</string>
 
 </resources>

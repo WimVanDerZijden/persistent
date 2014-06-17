@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 public class MainActivity extends Activity
 		implements NavigationDrawerFragment.NavigationDrawerCallbacks
@@ -247,11 +246,5 @@ public class MainActivity extends Activity
 		View v = getCurrentFocus();
 		if (v != null)
 			imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);		
-	}
-	
-	
-	public void childRowClicked(View v)
-	{
-		Toast.makeText(this, "test", Toast.LENGTH_SHORT).show();
 	}
 }
