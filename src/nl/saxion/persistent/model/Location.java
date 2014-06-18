@@ -11,12 +11,13 @@ import android.database.Cursor;
  *
  */
 public class Location {
+	private int id;
 	private String name;
 	private int capacity;
 
 	public static Location get(String name) {
 		Cursor cursor = DB.get(
-				"SELECT name, capacity FROM Locations WHERE name = ?", name);
+				"SELECT name, capacity, id FROM Locations WHERE name = ?", name);
 		Location location = cursor.moveToFirst() ? new Location(cursor) : null;
 		cursor.close();
 		return location;
@@ -44,6 +45,7 @@ public class Location {
 	private Location(Cursor cursor) {
 		name = cursor.getString(0);
 		capacity = cursor.getInt(1);
+		id = cursor.getInt(2);
 	}
 	
 	@Override
@@ -61,6 +63,10 @@ public class Location {
 
 	public int getCapacity() {
 		return capacity;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 }

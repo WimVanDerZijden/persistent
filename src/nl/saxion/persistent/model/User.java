@@ -14,6 +14,7 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 
 public class User {
+	private int id;
 	private String name;
 	// private Uri photo;
 	// private String phonenumber;
@@ -30,16 +31,45 @@ public class User {
 	 * @return
 	 */
 	public static User get(String email, String password) {
-		Cursor cursor = DB.get("SELECT name, email, photo FROM User WHERE Email = ? AND password = ?",
+		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User WHERE Email = ? AND password = ?",
 				email, password);
 		User user = cursor.moveToFirst() ? new User(cursor) : null;
 		cursor.close();
 		return user;
 	}
+	
+	/**
+	 * Get user by id
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static User get(int id) {
+		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User WHERE id = ?", id);
+		User user = cursor.moveToFirst() ? new User(cursor) : null;
+		cursor.close();
+		return user;
+	}
 
+	/**
+	 * Get all users
+	 * 
+	 * @return
+	 */
 	public static List<User> getAll()
 	{
-		Cursor cursor = DB.get("SELECT name, email, photo FROM User");
+		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User");
+		return getAll(cursor);
+	}
+	
+	/**
+	 * Get all users from cursor.
+	 * 
+	 * @param cursor
+	 * @return
+	 */
+	public static List<User> getAll(Cursor cursor)
+	{
 		List<User> userList = new ArrayList<User>();
 		if (cursor.moveToFirst()) {
 			do {
@@ -68,9 +98,10 @@ public class User {
 		}
 	}
 
-	private User(Cursor cursor) {
+	protected User(Cursor cursor) {
 		name = cursor.getString(0);
 		email = cursor.getString(1);
+		id = cursor.getInt(3);
 		try {
 			byte[] photo_bytes = cursor.getBlob(2);
 			if (photo_bytes != null && photo_bytes.length > 0)
@@ -91,6 +122,10 @@ public class User {
 
 	public Bitmap getPhoto() {
 		return photo;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
 	public boolean setName(String name) {

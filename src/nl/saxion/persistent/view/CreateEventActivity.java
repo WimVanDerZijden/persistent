@@ -266,7 +266,7 @@ public class CreateEventActivity extends Activity implements
 		}
 		
 		if(valid){
-			if(Event.createEvent(name, datetime, duration, maxParticipants, minParticipants, description))
+			if(Event.createEvent(MainActivity.getUser(), name, datetime, duration, maxParticipants, minParticipants, description))
 				Toast.makeText(this, "Event created", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();

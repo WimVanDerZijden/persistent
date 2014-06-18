@@ -21,6 +21,12 @@ public class Event {
 	private Long datetime2;
 	private Long datetime3;
 	
+	///** The users who registered for this event */
+	//private List<User> users;
+	
+	/** The user who created this event */
+	private User user;
+	
 	private Event(Cursor cursor) {
 		name = cursor.getString(0);
 		datetime = cursor.getLong(1);
@@ -32,16 +38,17 @@ public class Event {
 		datetime2 = cursor.getLong(7);
 		datetime3 = cursor.getLong(8);
 		id = cursor.getInt(9);
+		user = User.get(cursor.getInt(10));
 	}
 
 	public int getId() {
 		return id;
 	}
 	
-	public static boolean createEvent(String name, Long datetime, Long duration, Integer maxparticipants, Integer minparticipants, String description){
+	public static boolean createEvent(User user, String name, Long datetime, Long duration, Integer maxparticipants, Integer minparticipants, String description){
 		try {
-			DB.doIt("INSERT INTO Event (name,duration,maxparticipants,minparticipants,description,datetime) VALUES (?,?,?,?,?,?)"
-					, name, duration, maxparticipants, minparticipants, description, datetime);
+			DB.doIt("INSERT INTO Event (user_id,name,duration,maxparticipants,minparticipants,description,datetime) VALUES (?,?,?,?,?,?)",
+					user.getId(), name, duration, maxparticipants, minparticipants, description, datetime);
 			Log.i("Event", "Event created");
 			return true;
 		} catch (SQLiteException e){
@@ -51,7 +58,7 @@ public class Event {
 	}
 
 	public static List<Event> getAll() {
-		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id FROM Event");
+		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id FROM Event");
 		List<Event> eventList = new ArrayList<Event>();
 		if (cursor.moveToFirst()) {
 			do {
@@ -61,6 +68,53 @@ public class Event {
 		cursor.close();
 		return eventList;
 	}
+	
+	/**
+	 * Register a user for an event by inserting a row into the Invite table
+	 * with isAccepted = 1 (default value).
+	 * 
+	 * Will return false if user could not be registered. In this case the user
+	 * was probably already registered.
+	 * 
+	 * @param event
+	 * @param user
+	 * @return
+	 */
+	public boolean register(User user) {
+		try {
+			DB.doIt("INSERT INTO Invite (event_id, user_id, datetime)",
+					getId(), user.getId(), System.currentTimeMillis());
+			return true;
+		}
+		catch (SQLiteException e) {
+			Log.e("User", "SQL failed: " + e.getMessage());
+			return false;			
+		}
+	}
+	
+	public List<User> getUsers() {
+		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
+				+ "INNER JOIN Invite i ON i.user_id = u.id AND i_event_id = ?", getId());
+		List<User> users = User.getAll(cursor);
+		cursor.close();
+		return users;
+	}
+	
+	/**
+	 * Check if a specific user is registered for this event.
+	 * 
+	 * @return
+	 */
+	public boolean isRegistered(User user) {
+		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
+				+ "INNER JOIN Invite i ON i.user_id = u.id AND i.event_id = ? \n"
+				+ "WHERE u.id = ?",
+				getId(), user.getId());
+		boolean result = cursor.moveToFirst();
+		cursor.close();
+		return result;
+	}
+	
 	public String getName() {
 		return name;
 	}

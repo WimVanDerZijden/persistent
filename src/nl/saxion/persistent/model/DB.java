@@ -16,7 +16,7 @@ public class DB extends SQLiteOpenHelper
 	/**
 	 * Increment when DB script is changed
 	 */
-	private static final int DB_VERSION = 4; 
+	private static final int DB_VERSION = 11;
 	private Context context;
 	private static DB db_helper;
 
@@ -146,7 +146,7 @@ public class DB extends SQLiteOpenHelper
 				}
 				catch (SQLiteException e)
 				{
-					Log.w("DB","SQL failed: " + e.getMessage());
+					Log.e("DB","SQL failed: " + e.getMessage());
 				}
 				sql = "";
 			}
