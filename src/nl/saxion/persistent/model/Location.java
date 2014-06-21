@@ -15,12 +15,32 @@ public class Location {
 	private String name;
 	private int capacity;
 
+	/**
+	 * Get location by name.
+	 * 
+	 * @param name
+	 * @return
+	 */
 	public static Location get(String name) {
 		Cursor cursor = DB.get(
 				"SELECT name, capacity, id FROM Locations WHERE name = ?", name);
 		Location location = cursor.moveToFirst() ? new Location(cursor) : null;
 		cursor.close();
 		return location;
+	}
+	
+	/**
+	 * Get location by id.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public static Location get(int id) {
+		Cursor cursor = DB.get(
+				"SELECT name, capacity, id FROM Locations WHERE id = ?", id);
+		Location location = cursor.moveToFirst() ? new Location(cursor) : null;
+		cursor.close();
+		return location;		
 	}
 	
 	/**
@@ -31,7 +51,7 @@ public class Location {
 	 * @return locations
 	 */
 	public static List<Location> getAll() {
-		Cursor cursor = DB.get("SELECT name, capacity FROM Locations");
+		Cursor cursor = DB.get("SELECT name, capacity, id FROM Locations");
 		List<Location> locationList = new ArrayList<Location>();
 		if (cursor.moveToFirst()) {
 			do {
@@ -50,7 +70,7 @@ public class Location {
 	
 	@Override
 	public String toString(){
-		return name + "\n" + capacity;
+		return name + " (" + capacity + ")";
 	}
 
 	public String getName() {

@@ -17,6 +17,8 @@ public class Event {
 	
 	private String description;
 	
+	private Location location;
+	
 	private Long datetime1;
 	private Long datetime2;
 	private Long datetime3;
@@ -39,26 +41,27 @@ public class Event {
 		datetime3 = cursor.getLong(8);
 		id = cursor.getInt(9);
 		user = User.get(cursor.getInt(10));
+		location = Location.get(cursor.getInt(11));
 	}
 
 	public int getId() {
 		return id;
 	}
 	
-	public static boolean createEvent(User user, String name, Long datetime, Long duration, Integer maxparticipants, Integer minparticipants, String description){
+	public static boolean createEvent(User user, String name, Long datetime, Long duration, Integer maxparticipants, Integer minparticipants, String description, Location location){
 		try {
-			DB.doIt("INSERT INTO Event (user_id,name,duration,maxparticipants,minparticipants,description,datetime) VALUES (?,?,?,?,?,?)",
-					user.getId(), name, duration, maxparticipants, minparticipants, description, datetime);
+			DB.doIt("INSERT INTO Event (user_id,name,duration,maxparticipants,minparticipants,description,datetime,location_id) VALUES (?,?,?,?,?,?,?,?)",
+					user.getId(), name, duration, maxparticipants, minparticipants, description, datetime, location.getId());
 			Log.i("Event", "Event created");
 			return true;
 		} catch (SQLiteException e){
-			Log.i("Event", "SQLiteException: " + e.toString());
+			Log.e("Event", "SQLiteException: " + e.toString());
 			return false;
 		}
 	}
 
 	public static List<Event> getAll() {
-		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id FROM Event");
+		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id FROM Event");
 		List<Event> eventList = new ArrayList<Event>();
 		if (cursor.moveToFirst()) {
 			do {
@@ -149,6 +152,19 @@ public class Event {
 
 	public Long getDatetime3() {
 		return datetime3;
+	}
+	
+	/**
+	 * Get the user that created this event
+	 * 
+	 * @return
+	 */
+	public User getUser() {
+		return user;
+	}
+	
+	public Location getLocation() {
+		return location;
 	}
 	
 	@Override

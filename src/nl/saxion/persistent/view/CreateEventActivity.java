@@ -2,9 +2,11 @@ package nl.saxion.persistent.view;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.Event;
+import nl.saxion.persistent.model.Location;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -14,8 +16,12 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -30,7 +36,8 @@ import android.widget.Toast;
  *
  */
 public class CreateEventActivity extends Activity implements
-		DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+		DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener,
+		OnItemSelectedListener {
 
 	private TextView dateField;
 	private TextView timeFromField;
@@ -41,9 +48,15 @@ public class CreateEventActivity extends Activity implements
 	private EditText eventDescriptionField;
 	private DialogFragment current_dialog;
 	
+	private Spinner locationSpinner;
+	private ArrayAdapter<Location> locationAdapter;
+	private static List<Location> locations;
+	private static Location location;
+	
 	private static Calendar date;
 	private static Calendar timeFrom;
 	private static Calendar timeTo;
+	
 	
 	private DialogType dialogType;
 	
@@ -69,6 +82,14 @@ public class CreateEventActivity extends Activity implements
 		minNrField =(EditText) findViewById(R.id.min_nr_field);
 		eventNameField = (EditText) findViewById(R.id.event_name_field);
 		eventDescriptionField = (EditText) findViewById(R.id.event_description_field);
+		locationSpinner = (Spinner) findViewById(R.id.location_spinner);
+		if (locations == null)
+			locations = Location.getAll();
+		
+		locationAdapter = new ArrayAdapter<Location>(this, R.layout.location_spinner_item, locations);
+		locationSpinner.setAdapter(locationAdapter);
+		locationSpinner.setOnItemSelectedListener(this);
+		
 		DateFormat df = DateFormat.getDateInstance();
 		DateFormat tf = DateFormat.getTimeInstance();
 		if (date != null)
@@ -77,6 +98,8 @@ public class CreateEventActivity extends Activity implements
 			timeFromField.setText(tf.format(timeFrom.getTime()));
 		if (timeTo != null)
 			timeToField.setText(tf.format(timeTo.getTime()));
+		if (location != null)
+			; //locationSpinner.set;
 	}
 	
 	@Override
@@ -264,9 +287,12 @@ public class CreateEventActivity extends Activity implements
 			requestfocus = maxNrField;
 			valid = false;
 		}
+		if (location == null) {
+			valid = false;
+		}
 		
 		if(valid){
-			if(Event.createEvent(MainActivity.getUser(), name, datetime, duration, maxParticipants, minParticipants, description))
+			if(Event.createEvent(MainActivity.getUser(), name, datetime, duration, maxParticipants, minParticipants, description, location))
 				Toast.makeText(this, "Event created", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
@@ -285,5 +311,16 @@ public class CreateEventActivity extends Activity implements
 		date = null;
 		timeTo = null;
 		timeFrom = null;
+	}
+
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+		location = locations.get(position);
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		location = null;
+		
 	}
 }
