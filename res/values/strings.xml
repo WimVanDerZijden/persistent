@@ -44,5 +44,6 @@
     <string name="more_details">More Details</string>
     <string name="people">People Currently Signed up</string>
     <string name="sign_up">Sign Up</string>
+    <string name="action_filter">Filter</string>
 
 </resources>

@@ -267,8 +267,26 @@ public class CreateEventActivity extends Activity implements
 				date.set(Calendar.MINUTE, timeFrom.get(Calendar.MINUTE));
 				if (timeTo != null)
 					duration = timeTo.getTimeInMillis() - timeFrom.getTimeInMillis();
+				else
+				{
+					valid = false;
+					timeToField.setError("Time To is required");
+					requestfocus = timeToField;
+				}
+			}
+			else
+			{
+				timeFromField.setError("Time From is required");
+				requestfocus = timeFromField;
+				valid = false;		
 			}
 			datetime = date.getTimeInMillis();
+		}
+		else
+		{
+			valid = false;
+			dateField.setError("Date is required");
+			requestfocus = dateField;
 		}
 		if (duration != null && duration <= 0) {
 			timeToField.setError("Time To must be higher than Time From");

@@ -16,7 +16,7 @@ public class DB extends SQLiteOpenHelper
 	/**
 	 * Increment when DB script is changed
 	 */
-	private static final int DB_VERSION = 11;
+	private static final int DB_VERSION = 12;
 	private Context context;
 	private static DB db_helper;
 
@@ -123,7 +123,7 @@ public class DB extends SQLiteOpenHelper
 	 * Please note:
 	 * All terminators (;) must be at the end of a line.
 	 * 
-	 * SQLiteErrors are logged as a warning.
+	 * SQLiteErrors are logged as errors.
 	 * They don't prevent the full script from being executed.
 	 * 
 	 * @param db

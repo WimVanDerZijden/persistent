@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 public class EventListFragment extends MainFragment implements OnChildClickListener {
 	List<Event> events;
-	List<HashMap<String, Object>> groupList;
+	List<HashMap<String, String>> groupList;
 	List<ArrayList<HashMap<String, String>>> childList;
 	SimpleExpandableListAdapter sela;
 
@@ -26,9 +26,8 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_event_list, container, false);
 		ExpandableListView eventList = (ExpandableListView) rootView.findViewById(R.id.event_list);
-		events = Event.getAll();
-		groupList = createGroupList();
-		childList = createChildList();
+		groupList = new ArrayList<HashMap<String, String>>();
+		childList = new ArrayList<ArrayList<HashMap<String, String>>>();
 		sela = new SimpleExpandableListAdapter(
 				this.getActivity(),
 				groupList, // Creating group List.
@@ -42,27 +41,34 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 				);
 		eventList.setAdapter(sela);
 		eventList.setOnChildClickListener(this);
-		// To update adapter:
-		//sela.notifyDataSetChanged();
 		return rootView;
 	}
-
-	private List<HashMap<String, Object>> createGroupList() {
-		ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String, Object>>();
-		for (int i = 0; i < events.size(); ++i) { 
-			Event event = events.get(i);
-			HashMap<String, Object> m = new HashMap<String, Object>();
-			m.put("Name", event.toString());
-			m.put("Date", DateFormat.getDateInstance().format(event.getDatetime()));
-			m.put("Location", "/Events location");
-			result.add(m);
-		}
-		return result;
+	
+	@Override
+	public void onStart()
+	{
+		events = Event.getAll();
+		updateGroupList(groupList);
+		updateChildList(childList);
+		sela.notifyDataSetChanged();
+		super.onStart();
+		
 	}
 
-	private List<ArrayList<HashMap<String, String>>> createChildList() {
+	private void updateGroupList(List<HashMap<String, String>> result) {
+		result.clear();
+		for (int i = 0; i < events.size(); ++i) { 
+			Event event = events.get(i);
+			HashMap<String, String> m = new HashMap<String, String>();
+			m.put("Name", event.getName());
+			m.put("Date", DateFormat.getDateInstance().format(event.getDatetime()));
+			m.put("Location", event.getLocation().getName());
+			result.add(m);
+		}
+	}
 
-		ArrayList<ArrayList<HashMap<String, String>>> result = new ArrayList<ArrayList<HashMap<String, String>>>();
+	private void updateChildList(List<ArrayList<HashMap<String, String>>> result) {
+		result.clear();
 		for (int i = 0; i < events.size(); ++i) {
 			ArrayList<HashMap<String, String>> secList = new ArrayList<HashMap<String, String>>();
 			Event event = events.get(i);
@@ -78,11 +84,8 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 			HashMap<String, String> time = new HashMap<String, String>();
 			time.put("Sub Item", getString(R.string.sign_up));
 			secList.add(time);
-			
-			
 			result.add(secList);
 		}
-		return result;
 	}
 
 	@Override
