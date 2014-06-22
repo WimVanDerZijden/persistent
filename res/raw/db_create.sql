@@ -75,4 +75,12 @@ VALUES (8, 'Escher', 100);
 
 
 INSERT INTO event(id,name,datetime,duration,maxparticipants,minparticipants,description,user_id,location_id) VALUES
-(1,'voetbalsessie',1403359514000,60,20,6,'We willen graag minimaal 6 personen en kom optijd',1,1);
+(1,'Voetbal', 1406030400000,60,20,6,'Gezellig potje voetbal',1,1);
+INSERT INTO event(id,name,datetime,duration,maxparticipants,minparticipants,description,user_id,location_id) VALUES
+(2,'Social Media',1407030400000,60,20,6,'Interessante lezing over social media impact',1,2);
+INSERT INTO event(id,name,datetime,duration,maxparticipants,minparticipants,description,user_id,location_id) VALUES
+(3,'Cloud Computing',1408030400000,60,20,6,'Trend of hype?',1,2);
+INSERT INTO event(id,name,datetime,duration,maxparticipants,minparticipants,description,user_id,location_id) VALUES
+(4,'Robotics',1409030400000,60,20,6,'Robotics: nieuwe toepassingen',1,3);
+INSERT INTO event(id,name,datetime,duration,maxparticipants,minparticipants,description,user_id,location_id) VALUES
+(5,'Telematica',1410030400000,60,20,6,'Nieuwe uitdagingen op het gebied van Telematica',1,3);

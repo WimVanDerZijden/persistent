@@ -7,30 +7,6 @@
     tools:ignore="MergeRootFrame"
     android:background="#DDD" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@android:string/cancel"
-            android:onClick="cancelButtonPressed" />
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"
-            android:id="@+id/ok_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@android:string/ok"
-            android:onClick="okButtonPressed" />
-
-    </LinearLayout>
-
     <ScrollView
         android:id="@+id/scrollView1"
         android:layout_width="match_parent"
@@ -125,10 +101,9 @@
             <Spinner
                 android:id="@+id/location_spinner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_margin="8dp"
-                android:layout_weight="1"
-                android:entries="@array/event_types" />
+                android:layout_weight="1" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -170,8 +145,31 @@
                 android:layout_weight="1" />
             
             </LinearLayout>
-            
+               <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:id="@+id/cancel_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/cancel"
+            android:onClick="cancelButtonPressed" />
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@android:string/ok"
+            android:onClick="okButtonPressed" />
+
+    </LinearLayout> 
         </LinearLayout>
+        
     </ScrollView>
 
 </LinearLayout>

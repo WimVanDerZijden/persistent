@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.saxion.persistent.R;
+import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.model.Event;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,10 +18,11 @@ import android.widget.SimpleExpandableListAdapter;
 import android.widget.Toast;
 
 public class EventListFragment extends MainFragment implements OnChildClickListener {
-	List<Event> events;
-	List<HashMap<String, String>> groupList;
-	List<ArrayList<HashMap<String, String>>> childList;
-	SimpleExpandableListAdapter sela;
+	
+	private List<Event> events;
+	private List<HashMap<String, String>> groupList;
+	private List<ArrayList<HashMap<String, String>>> childList;
+	private SimpleExpandableListAdapter sela;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -47,12 +49,12 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	@Override
 	public void onStart()
 	{
-		events = Event.getAll();
+		List<Filter> filters = Filter.get(Event.TABLE_NAME, getActivity());
+		events = Event.get(filters);
 		updateGroupList(groupList);
 		updateChildList(childList);
 		sela.notifyDataSetChanged();
 		super.onStart();
-		
 	}
 
 	private void updateGroupList(List<HashMap<String, String>> result) {

@@ -2,6 +2,7 @@ package nl.saxion.persistent.view;
 
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.DB;
+import nl.saxion.persistent.model.Event;
 import nl.saxion.persistent.model.User;
 import nl.saxion.persistent.view.mainfragment.MainFragment;
 import nl.saxion.persistent.view.mainfragment.RegisterDialogFragment;
@@ -164,8 +165,14 @@ public class MainActivity extends Activity
 			return true;
 		}
 		if (id == R.id.action_create_event){
-			createEvent();
+			Intent intent = new Intent(this, CreateEventActivity.class);
+			startActivity(intent);
 			return true;
+		}
+		if (id == R.id.action_filter_event) {
+			Intent intent = new Intent(this,FilterActivity.class);
+			intent.putExtra("TableName", Event.TABLE_NAME);
+			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -174,14 +181,6 @@ public class MainActivity extends Activity
 		RegisterDialogFragment registerDialog = new RegisterDialogFragment();
 		registerDialog.show(getFragmentManager(), "Register Dialog");
 		
-	}
-
-	/**
-	 * Will create a dialog where the user can fill in info for a new event.
-	 */
-	public void createEvent(){
-		Intent intent = new Intent(this, CreateEventActivity.class);
-		startActivityForResult(intent, 0);
 	}
 
 	public static User getUser()

@@ -3,11 +3,15 @@ package nl.saxion.persistent.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.saxion.persistent.controller.Filter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 public class Event {
+	
+	public static final String TABLE_NAME = "Event";
+	
 	private int id;
 	private String name;
 	private Long datetime;
@@ -60,8 +64,31 @@ public class Event {
 		}
 	}
 
-	public static List<Event> getAll() {
-		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id FROM Event");
+	/**
+	 * Get a list of events, filtered by the given list of filters.
+	 * 
+	 * Filters may be null or an empty list to get all events
+	 * 
+	 * @param filters
+	 * @return
+	 */
+	public static List<Event> get(List<Filter> filters)
+	{
+		String sql = "SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id "
+				+ "FROM Event "
+				+ "WHERE";
+		List<Object> params = new ArrayList<Object>();
+		if (filters != null) {
+			for (Filter filter : filters) {
+				sql += filter.getSQL();
+				sql += " AND";
+				params.add(filter.getValue());
+			}
+		}
+		// Remove the last word from the query (WHERE or AND)
+		sql = sql.substring(0, sql.lastIndexOf(" "));
+		sql += " ORDER BY datetime";
+		Cursor cursor = DB.get(sql, params.toArray());
 		List<Event> eventList = new ArrayList<Event>();
 		if (cursor.moveToFirst()) {
 			do {
