@@ -112,7 +112,7 @@ public class Event {
 	 */
 	public boolean register(User user) {
 		try {
-			DB.doIt("INSERT INTO Invite (event_id, user_id, datetime)",
+			DB.doIt("INSERT INTO Invite (event_id, user_id, datetime) VALUES (?,?,?)",
 					getId(), user.getId(), System.currentTimeMillis());
 			return true;
 		}
@@ -124,7 +124,7 @@ public class Event {
 	
 	public List<User> getUsers() {
 		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
-				+ "INNER JOIN Invite i ON i.user_id = u.id AND i_event_id = ?", getId());
+				+ "INNER JOIN Invite i ON i.user_id = u.id AND i.event_id = ?", getId());
 		List<User> users = User.getAll(cursor);
 		cursor.close();
 		return users;
