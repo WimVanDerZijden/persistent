@@ -14,7 +14,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="5dp"
         android:paddingLeft="24dp"
-        android:text="row1" />
+        android:textStyle="bold" />
     
     <View
         android:id="@+id/horizontal_line"
@@ -24,8 +24,6 @@
         android:layout_below="@+id/row_name"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         android:background="#444" />
 
       <TextView
@@ -36,8 +34,7 @@
           android:layout_alignParentRight="true"
           android:layout_below="@+id/horizontal_line"
           android:layout_margin="5dp"
-          android:paddingLeft="24dp"
-          android:text="row2" />
+          android:paddingLeft="24dp" />
 
       <TextView
           android:id="@+id/row_location"
@@ -47,7 +44,6 @@
           android:layout_alignBottom="@+id/row_date"
           android:layout_alignParentRight="true"
           android:layout_margin="5dp"
-          android:paddingRight="24dp"
-          android:text="tv3" />
+          android:paddingRight="24dp" />
 
 </RelativeLayout>

@@ -40,7 +40,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 				this.getActivity(),
 				groupList, // Creating group List.
 				R.layout.group_row, // Group item layout XML.
-				new String[] { "Name","Date", "Location" }, // the key of group item.
+				new String[] { "Name","Date", "Availability" }, // the key of group item.
 				new int[] { R.id.row_name, R.id.row_date, R.id.row_location }, // ID of each group item. -Data under the key goes into this TextView.
 				childList, // childData describes second-level entries.
 				R.layout.child_row, // Layout for sub-level entries(second level).
@@ -62,7 +62,10 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 		super.onStart();
 		
 	}
-
+	/**
+	 * 
+	 * @param result
+	 */
 	private void updateGroupList(List<HashMap<String, String>> result) {
 		result.clear();
 		for (int i = 0; i < events.size(); ++i) { 
@@ -70,7 +73,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 			HashMap<String, String> m = new HashMap<String, String>();
 			m.put("Name", event.getName());
 			m.put("Date", DateFormat.getDateInstance().format(event.getDatetime()));
-			m.put("Location", event.getLocation().getName());
+			m.put("Availability", "" + event.getUsers().size() + " / " + event.getLocation().getCapacity());
 			result.add(m);
 		}
 	}
