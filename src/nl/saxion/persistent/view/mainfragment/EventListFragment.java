@@ -7,12 +7,20 @@ import java.util.List;
 
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.Event;
+import nl.saxion.persistent.model.User;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
+import android.widget.ListView;
 import android.widget.SimpleExpandableListAdapter;
 import android.widget.Toast;
 
@@ -71,7 +79,6 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 		result.clear();
 		for (int i = 0; i < events.size(); ++i) {
 			ArrayList<HashMap<String, String>> secList = new ArrayList<HashMap<String, String>>();
-			Event event = events.get(i);
 			//Adds the first item in the child list
 			HashMap<String, String> description = new HashMap<String, String>();
 			description.put("Sub Item", getString(R.string.more_details));
@@ -91,16 +98,93 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	@Override
 	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 		switch(childPosition){
-			case 0: //More Details
+			case 0: createDetailsDialog(groupPosition);
 					break;
-			case 1: //People Signed up
+			case 1: createPeopleSignedUpDialog(groupPosition);
 					break;
-			case 2: //Sign up
+			case 2: createSignUpDialog(groupPosition);
 					break;
 		}
-		
-		Toast.makeText(getActivity(), "Group: " + groupPosition + " Child: " + childPosition, Toast.LENGTH_LONG).show();
 		return false;
+	}
+	
+
+	/**
+	 * Creates a dialog thats will ask the user if he wants to sign up for the
+	 * event
+	 * 
+	 * @param groupPosition The position of this event in the list of events
+	 */
+	private void createSignUpDialog(final int groupPosition) {
+		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+				.setMessage(R.string.sign_up_confirmation)
+				.setPositiveButton(android.R.string.yes,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+								String email = sp.getString("email", null);
+								String password = sp.getString("password", null);
+								if(events.get(groupPosition).register(User.get(email, password)))
+									Toast.makeText(getActivity(), "Signed up succesfully", Toast.LENGTH_LONG).show();
+								else
+									Toast.makeText(getActivity(), "Error while signing up", Toast.LENGTH_LONG).show();
+							}
+						})
+				.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								dialog.cancel();
+							}
+						}).create();
+		alertDialog.show();
+		Window window = alertDialog.getWindow();
+		window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+	}
+
+	/**
+	 * Create a dialog with a list of people currently signed up for the event
+	 * 
+	 * @param groupPosition The position of this event in the list of events
+	 */
+	private void createPeopleSignedUpDialog(int groupPosition) {
+		final ListView peopleListView = new ListView(getActivity());
+		// TODO put data in listView
+		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+		.setView(peopleListView)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				dialog.cancel();
+			}
+		})
+		.create();
+		alertDialog.show();
+	}
+	/**
+	 * Create a dialog with all the additional information about a event
+	 * 
+	 * @param groupPosition The position of this event in the list of events
+	 */
+	private void createDetailsDialog(int groupPosition) {
+		Event event = events.get(groupPosition);
+		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
+		final String dialogMessage = "Description:" + event.getDescription() + "\n\nTime: " + tf.format(event.getDatetime())
+				+ " - " + tf.format(event.getDatetime() + event.getDuration()) + "\nLocation: " + event.getLocation().getName();
+		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+		.setMessage(dialogMessage)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which)
+			{
+				dialog.cancel();
+			}
+		})
+		.create();
+		alertDialog.show();
 	}
 
 }

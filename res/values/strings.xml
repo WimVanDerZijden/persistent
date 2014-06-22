@@ -45,5 +45,6 @@
     <string name="people">People Currently Signed up</string>
     <string name="sign_up">Sign Up</string>
     <string name="action_filter">Filter</string>
+    <string name="sign_up_confirmation">Are you sure you want to sign up for this event?</string>
 
 </resources>
