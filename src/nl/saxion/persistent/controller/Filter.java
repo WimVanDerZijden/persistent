@@ -71,7 +71,7 @@ public class Filter
 		GREATER_THAN_OR_EQUAL(" >= ", "\u2265"),
 		LESS_THAN_OR_EQUAL(" <= ", "\u2264"),
 		LIKE(" LIKE ", "\u2248"),
-		NOT_LIKE(" NOT LIKE ", "\u2249");
+		NOT_LIKE(" NOT LIKE ", "\u2260");
 
 		private String name;
 		private String sql;
@@ -124,9 +124,6 @@ public class Filter
 
 	public String getDisplayString() {
 		String opString = operator.toString();
-		if (opString.length() == 0) {
-			opString = operator.getSQL();
-		}
 		String result = column.getName() + opString;
 		switch (column.getDataType())
 		{
@@ -139,7 +136,7 @@ public class Filter
 		case NUMBER:
 			break;
 		case TEXT:
-			// Text is stored with prefix and postfix %, which should be cut here.
+			// Text is stored with prefix and postfix %, which is cut here.
 			return result + value.toString().substring(1, value.toString().length() - 1);
 		case USER:
 			break;

@@ -13,6 +13,7 @@ import nl.saxion.persistent.model.Column.DataType;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
@@ -20,6 +21,7 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -54,6 +56,9 @@ public class FilterActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 		setContentView(R.layout.activity_filter);
 		tableName = (String) getIntent().getExtras().get("TableName");
 		filters = Filter.get(tableName, this);
@@ -239,6 +244,15 @@ public class FilterActivity extends Activity
 
 	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem menuItem)
+	{       
+	    if (menuItem.getItemId() == android.R.id.home){
+	    	onBackPressed();
+	    }
+	    return true;
+	}
+	
 	@Override
 	public void onBackPressed()
 	{

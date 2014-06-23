@@ -25,31 +25,28 @@ public class Column
 		
 		Operator[] ops;
 		int n;
-		n = 0;
-		ops = new Operator[2];
-		ops[n++] = Operator.GREATER_THAN;
-		ops[n++] = Operator.LESS_THAN;
+		ops = new Operator[n = 2];
+		ops[--n] = Operator.GREATER_THAN;
+		ops[--n] = Operator.LESS_THAN;
 		OPERATORS.put(DataType.TIMESTAMP, ops);
 		
-		ops = new Operator[2];
-		ops[0] = Operator.LIKE;
-		ops[1] = Operator.NOT_LIKE;
+		ops = new Operator[n = 2];
+		ops[--n] = Operator.NOT_LIKE;
+		ops[--n] = Operator.LIKE;
 		OPERATORS.put(DataType.TEXT, ops);
 		
-		ops = new Operator[6];
-		n = 0;
-		ops[n++] = Operator.GREATER_THAN;
-		ops[n++] = Operator.LESS_THAN;
-		ops[n++] = Operator.GREATER_THAN_OR_EQUAL;
-		ops[n++] = Operator.LESS_THAN_OR_EQUAL;
-		ops[n++] = Operator.EQUAL;
-		ops[n++] = Operator.NOT_EQUAL;
+		ops = new Operator[n = 6];
+		ops[--n] = Operator.EQUAL;
+		ops[--n] = Operator.NOT_EQUAL;
+		ops[--n] = Operator.LESS_THAN_OR_EQUAL;
+		ops[--n] = Operator.GREATER_THAN_OR_EQUAL;
+		ops[--n] = Operator.LESS_THAN;
+		ops[--n] = Operator.GREATER_THAN;
 		OPERATORS.put(DataType.NUMBER, ops);
 		
-		ops = new Operator[2];
-		n = 0;
-		ops[n++] = Operator.EQUAL;
-		ops[n++] = Operator.NOT_EQUAL;
+		ops = new Operator[n = 2];
+		ops[--n] = Operator.NOT_EQUAL;
+		ops[--n] = Operator.EQUAL;
 		OPERATORS.put(DataType.LOCATION, ops);
 		OPERATORS.put(DataType.USER, ops);
 	}
