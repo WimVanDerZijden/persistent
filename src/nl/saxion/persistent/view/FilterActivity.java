@@ -200,7 +200,7 @@ public class FilterActivity extends Activity
 				case TEXT:
 					String value = ((EditText) findViewById(R.id.set_text)).getText().toString();
 					((EditText) findViewById(R.id.set_text)).setText("");
-					Filter filter = new Filter(column, operator, value);
+					Filter filter = new Filter(column, operator, "%" + value + "%");
 					filters.add(filter);
 					break;
 				case TIMESTAMP:
@@ -233,15 +233,6 @@ public class FilterActivity extends Activity
 					Filter.save(tableName, FilterActivity.this, filters);
 					filterAdapter.notifyDataSetChanged();
 				}
-			}
-
-		});
-
-		// Listener for return button
-		((Button) findViewById(R.id.cancel_button)).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				onBackPressed();
 			}
 
 		});

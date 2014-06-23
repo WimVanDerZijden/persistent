@@ -46,6 +46,16 @@
     </LinearLayout>
 
     <EditText
+        android:id="@+id/set_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="number"
+        android:visibility="gone" >
+
+    </EditText>
+
+    <EditText
         android:id="@+id/set_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,30 +64,25 @@
         android:visibility="gone" >
     </EditText>
 
-    <LinearLayout
+    <Spinner
+        android:id="@+id/location_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" />
 
-        <Button
-            android:id="@+id/cancel_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/done" />
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/add_button"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/create" />
-    </LinearLayout>
 
     <ListView
         android:id="@+id/filter_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="884dp"
+        android:layout_height="893dp" />
 
 </LinearLayout>

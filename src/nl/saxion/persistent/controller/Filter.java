@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.saxion.persistent.model.Column;
+import nl.saxion.persistent.model.Column.DataType;
 import nl.saxion.persistent.model.Event;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -32,7 +33,7 @@ public class Filter
 				filters.add(filter);
 			}
 			else {
-				Log.i("Filter","No default filter found for: " + tableName);
+				Log.i("Filter", "No default filter found for: " + tableName);
 			}
 			Editor editor = prefs.edit();
 			editor.putString(tableName, new Gson().toJson(filters));
@@ -41,39 +42,56 @@ public class Filter
 		else {
 			// We need to use TypeToken to specify the correct class, because
 			// ArrayList<Filter>.class doesn't work.
-			Log.i("Filter",json);
-			filters = new Gson().fromJson(json, new TypeToken<ArrayList<Filter>>(){}.getType()); 
-			Log.i("Filter","Filter loaded for: " + tableName);
+			Log.i("Filter", json);
+			filters = new Gson().fromJson(json, new TypeToken<ArrayList<Filter>>() {
+			}.getType());
+			Log.i("Filter", "Filter loaded for: " + tableName);
 		}
 		return filters;
 	}
-	
+
 	public static void save(String tableName, Context ctx, List<Filter> filters) {
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());;
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
+		;
 		Editor editor = prefs.edit();
 		editor.putString(tableName, new Gson().toJson(filters));
 		editor.commit();
 	}
-	
+
 	private Column column;
 	private Operator operator;
 	private Object value;
-	
+
 	public enum Operator
 	{
 		EQUAL(" = "),
-		NOT_EQUAL(" != "),
+		NOT_EQUAL(" != ", "\u2260"),
 		GREATER_THAN(" > "),
 		LESS_THAN(" < "),
-		GREATER_THAN_OR_EQUAL (" >= "),
-		LESS_THAN_OR_EQUAL(" <= ");
-		
+		GREATER_THAN_OR_EQUAL(" >= ", "\u2265"),
+		LESS_THAN_OR_EQUAL(" <= ", "\u2264"),
+		LIKE(" LIKE ", "\u2248"),
+		NOT_LIKE(" NOT LIKE ", "\u2249");
+
 		private String name;
-		
-		private Operator(String name) {
-			this.name = name;
+		private String sql;
+
+		private Operator(String sql)
+		{
+			this.name = sql;
+			this.sql = sql;
 		}
-		
+
+		private Operator(String sql, String name) {
+			this.name = name;
+			this.sql = sql;
+		}
+
+		public String getSQL()
+		{
+			return sql;
+		}
+
 		@Override
 		public String toString() {
 			return name;
@@ -86,10 +104,12 @@ public class Filter
 		this.operator = operator;
 		this.value = value;
 	}
-	
+
 	public String getSQL()
 	{
-		return " " + column.getColumnName() + operator.toString() + "?";
+		if (column.getDataType() == DataType.TEXT)
+			return " UPPER(" + column.getColumnName() + ")" + operator.getSQL() + "UPPER(?)";
+		return " " + column.getColumnName() + operator.getSQL() + "?";
 	}
 
 	public Operator getOperator()
@@ -101,11 +121,14 @@ public class Filter
 	{
 		return value;
 	}
-	
+
 	public String getDisplayString() {
-		// TODO resolve value
-		String result = column.getName() + operator.toString();
-		switch(column.getDataType())
+		String opString = operator.toString();
+		if (opString.length() == 0) {
+			opString = operator.getSQL();
+		}
+		String result = column.getName() + opString;
+		switch (column.getDataType())
 		{
 		case TIMESTAMP:
 			return result + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(value);
@@ -116,7 +139,8 @@ public class Filter
 		case NUMBER:
 			break;
 		case TEXT:
-			return result + value;
+			// Text is stored with prefix and postfix %, which should be cut here.
+			return result + value.toString().substring(1, value.toString().length() - 1);
 		case USER:
 			break;
 		default:
@@ -125,5 +149,5 @@ public class Filter
 		return result;
 		//+ value;
 	}
-	
+
 }

@@ -13,23 +13,45 @@ public class Column
 	
 	static
 	{
-		Column[] eventColumns = new Column[2];
+		Column[] eventColumns = new Column[6];
 		eventColumns[0] = new Column("Date and time","datetime",DataType.TIMESTAMP);
 		eventColumns[1] = new Column("Name","name",DataType.TEXT);
-		COLUMNS.put(Event.TABLE_NAME, eventColumns);
+		eventColumns[2] = new Column("Min Participants","minparticipants", DataType.NUMBER);
+		eventColumns[3] = new Column("Max Participants","maxparticipants", DataType.NUMBER);
+		eventColumns[4] = new Column("Location","location_id", DataType.LOCATION);
+		eventColumns[5] = new Column("Organized By","user_id", DataType.USER);
+		
+ 		COLUMNS.put(Event.TABLE_NAME, eventColumns);
 		
 		Operator[] ops;
+		int n;
+		n = 0;
 		ops = new Operator[2];
-		ops[0] = Operator.GREATER_THAN;
-		ops[1] = Operator.LESS_THAN;
+		ops[n++] = Operator.GREATER_THAN;
+		ops[n++] = Operator.LESS_THAN;
 		OPERATORS.put(DataType.TIMESTAMP, ops);
 		
 		ops = new Operator[2];
-		ops[0] = Operator.EQUAL;
-		ops[1] = Operator.NOT_EQUAL;
+		ops[0] = Operator.LIKE;
+		ops[1] = Operator.NOT_LIKE;
 		OPERATORS.put(DataType.TEXT, ops);
 		
-		//ops = 
+		ops = new Operator[6];
+		n = 0;
+		ops[n++] = Operator.GREATER_THAN;
+		ops[n++] = Operator.LESS_THAN;
+		ops[n++] = Operator.GREATER_THAN_OR_EQUAL;
+		ops[n++] = Operator.LESS_THAN_OR_EQUAL;
+		ops[n++] = Operator.EQUAL;
+		ops[n++] = Operator.NOT_EQUAL;
+		OPERATORS.put(DataType.NUMBER, ops);
+		
+		ops = new Operator[2];
+		n = 0;
+		ops[n++] = Operator.EQUAL;
+		ops[n++] = Operator.NOT_EQUAL;
+		OPERATORS.put(DataType.LOCATION, ops);
+		OPERATORS.put(DataType.USER, ops);
 	}
 	
 	/**
