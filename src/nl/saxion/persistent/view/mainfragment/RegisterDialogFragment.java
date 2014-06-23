@@ -34,7 +34,7 @@ public class RegisterDialogFragment extends DialogFragment{
 	            	   User user = User.register(name, email, password);
 	            	   if (user != null)
 	            	   {
-	            		   ((MainActivity) getActivity()).setUser(user);
+	            		   ((MainActivity) getActivity()).login(email, password);
 	            		   Toast.makeText(getActivity(), R.string.register_success, Toast.LENGTH_SHORT).show();
 	            	   }
 	            	   else

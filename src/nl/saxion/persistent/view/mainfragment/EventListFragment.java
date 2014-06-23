@@ -9,6 +9,7 @@ import nl.saxion.persistent.R;
 import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.model.Event;
 import nl.saxion.persistent.model.User;
+import nl.saxion.persistent.view.MyArrayAdapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -154,7 +155,9 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	 */
 	private void createPeopleSignedUpDialog(int groupPosition) {
 		final ListView peopleListView = new ListView(getActivity());
-		// TODO put data in listView
+		
+		MyArrayAdapter aa = new MyArrayAdapter(getActivity(), events.get(groupPosition).getUsers());
+		peopleListView.setAdapter(aa);
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 		.setView(peopleListView)
 		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
