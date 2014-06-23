@@ -9,12 +9,11 @@ import nl.saxion.persistent.R;
 import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.model.Event;
 import nl.saxion.persistent.model.User;
+import nl.saxion.persistent.view.MainActivity;
 import nl.saxion.persistent.view.MyArrayAdapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,16 +54,20 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 		return rootView;
 	}
 	
-	@Override
-	public void onStart()
+	private void refresh()
 	{
 		List<Filter> filters = Filter.get(Event.TABLE_NAME, getActivity());
 		events = Event.get(filters);
 		updateGroupList(groupList);
 		updateChildList(childList);
 		sela.notifyDataSetChanged();
+	}
+	@Override
+	public void onStart(){
+		refresh();
 		super.onStart();
 	}
+	
 	/**
 	 * 
 	 * @param result
@@ -83,7 +86,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 
 	private void updateChildList(List<ArrayList<HashMap<String, String>>> result) {
 		result.clear();
-		for (int i = 0; i < events.size(); ++i) {
+		for (Event event : events) {
 			ArrayList<HashMap<String, String>> secList = new ArrayList<HashMap<String, String>>();
 			//Adds the first item in the child list
 			HashMap<String, String> description = new HashMap<String, String>();
@@ -95,7 +98,10 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 			secList.add(date);
 			//Adds the third item in the child list
 			HashMap<String, String> time = new HashMap<String, String>();
-			time.put("Sub Item", getString(R.string.sign_up));
+			if(event.isRegistered(MainActivity.getUser()))
+				time.put("Sub Item", getString(R.string.sign_out));
+			else
+				time.put("Sub Item", getString(R.string.sign_up));
 			secList.add(time);
 			result.add(secList);
 		}
@@ -122,19 +128,33 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	 * @param groupPosition The position of this event in the list of events
 	 */
 	private void createSignUpDialog(final int groupPosition) {
+		final User user = MainActivity.getUser();
+		final boolean signUp;
+		final String signUpMessage;
+		if(events.get(groupPosition).isRegistered(MainActivity.getUser())){
+			signUpMessage = getString(R.string.sign_out_confirmation);
+			signUp = false;
+		} else {
+			signUpMessage = getString(R.string.sign_up_confirmation);
+			signUp = true;
+		}
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-				.setMessage(R.string.sign_up_confirmation)
+				.setMessage(signUpMessage)
 				.setPositiveButton(android.R.string.yes,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
-								SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-								String email = sp.getString("email", null);
-								String password = sp.getString("password", null);
-								if(events.get(groupPosition).register(User.get(email, password)))
+								if(!signUp){
+									if(events.get(groupPosition).unRegister(user))
+										Toast.makeText(getActivity(), "Signed out", Toast.LENGTH_LONG).show();
+									else
+										Toast.makeText(getActivity(), "Error Signing out", Toast.LENGTH_LONG).show();
+								}
+								else if(events.get(groupPosition).register(user))
 									Toast.makeText(getActivity(), "Signed up succesfully", Toast.LENGTH_LONG).show();
 								else
 									Toast.makeText(getActivity(), "Error while signing up", Toast.LENGTH_LONG).show();
+								refresh();
 							}
 						})
 				.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
@@ -179,7 +199,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	private void createDetailsDialog(int groupPosition) {
 		Event event = events.get(groupPosition);
 		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
-		final String dialogMessage = "Description:" + event.getDescription() + "\n\nTime: " + tf.format(event.getDatetime())
+		final String dialogMessage = "Description:" + event.getDescription() + "\nTime: " + tf.format(event.getDatetime())
 				+ " - " + tf.format(event.getDatetime() + event.getDuration()) + "\nLocation: " + event.getLocation().getName();
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 		.setMessage(dialogMessage)
