@@ -50,5 +50,6 @@
     <string name="create">Create</string>
     <string name="sign_up_confirmation">Are you sure you want to sign up for this event?</string>
     <string name="sign_out_confirmation">Are you sure you want to sign out of this event?</string>
-
+	<string name="done">Return</string>
+    
 </resources>
