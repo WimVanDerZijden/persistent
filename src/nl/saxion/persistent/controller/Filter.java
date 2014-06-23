@@ -6,9 +6,10 @@ import java.util.List;
 
 import nl.saxion.persistent.model.Column;
 import nl.saxion.persistent.model.Event;
-import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -16,9 +17,9 @@ import com.google.gson.reflect.TypeToken;
 
 public class Filter
 {
-	public static List<Filter> get(String tableName, Activity activity)
+	public static List<Filter> get(String tableName, Context ctx)
 	{
-		SharedPreferences prefs = activity.getPreferences(Activity.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
 		String json = prefs.getString(tableName, null);
 		List<Filter> filters;
 		if (json == null) {
@@ -40,10 +41,18 @@ public class Filter
 		else {
 			// We need to use TypeToken to specify the correct class, because
 			// ArrayList<Filter>.class doesn't work.
+			Log.i("Filter",json);
 			filters = new Gson().fromJson(json, new TypeToken<ArrayList<Filter>>(){}.getType()); 
 			Log.i("Filter","Filter loaded for: " + tableName);
 		}
 		return filters;
+	}
+	
+	public static void save(String tableName, Context ctx, List<Filter> filters) {
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());;
+		Editor editor = prefs.edit();
+		editor.putString(tableName, new Gson().toJson(filters));
+		editor.commit();
 	}
 	
 	private Column column;

@@ -126,7 +126,8 @@ public class Event {
 		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
 				+ "INNER JOIN Invite i ON i.user_id = u.id AND i.event_id = ?", getId());
 		List<User> users = User.getAll(cursor);
-		cursor.close();
+		// User.getAll() already closes the cursor
+		//cursor.close();
 		return users;
 	}
 	
