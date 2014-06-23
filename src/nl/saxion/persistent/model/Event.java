@@ -121,6 +121,21 @@ public class Event {
 			return false;
 		}
 	}
+	/**
+	 * removing a user from an event by removing a row from the invite table 
+	 * @param user
+	 * @return
+	 */
+	public boolean unRegister(User user){
+		try {
+			DB.doIt("DELETE FROM Invite WHERE user_id=?", user.getId());
+			return true;
+		} catch (SQLiteException e) {
+			Log.e("User", "SQL failed: " + e.getMessage());
+			return false;
+		}
+		
+	}
 	
 	public List<User> getUsers() {
 		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
