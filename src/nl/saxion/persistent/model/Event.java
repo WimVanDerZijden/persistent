@@ -118,7 +118,7 @@ public class Event {
 		}
 		catch (SQLiteException e) {
 			Log.e("User", "SQL failed: " + e.getMessage());
-			return false;			
+			return false;
 		}
 	}
 	

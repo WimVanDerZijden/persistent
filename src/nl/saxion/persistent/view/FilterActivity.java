@@ -1,11 +1,13 @@
 package nl.saxion.persistent.view;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.controller.Filter;
+import nl.saxion.persistent.controller.Filter.Operator;
 import nl.saxion.persistent.model.Column;
+import nl.saxion.persistent.model.Column.DataType;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -20,11 +22,18 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class FilterActivity extends Activity implements OnItemSelectedListener
+public class FilterActivity extends Activity
 {
 	private List<Filter> filters;
 	private FilterAdapter adapter;
 	private String tableName;
+	
+	private Spinner columnSpinner;
+	private Column[] columns;
+	
+	private Spinner operatorSpinner;
+	private ArrayAdapter<Operator> operatorAdapter;
+	private List<Operator> operators;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -37,10 +46,65 @@ public class FilterActivity extends Activity implements OnItemSelectedListener
 		adapter = new FilterAdapter(this, filters);
 		filterList.setAdapter(adapter);
 
-		Spinner columnSpinner = (Spinner) findViewById(R.id.column_spinner);
-		ArrayAdapter<Column> adapter = new ArrayAdapter<Column>(this, R.layout.location_spinner_item, Column.get(tableName));
+		columns = Column.get(tableName);
+		columnSpinner = (Spinner) findViewById(R.id.column_spinner);
+		ArrayAdapter<Column> adapter = new ArrayAdapter<Column>(this, R.layout.location_spinner_item, columns);
 		columnSpinner.setAdapter(adapter);
-		columnSpinner.setOnItemSelectedListener(this);
+		columnSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				// Hide and show the applicable value fields for this data type
+				Column column = (Column) parent.getItemAtPosition(position);
+				if (column.getDataType() == DataType.TIMESTAMP) {
+					findViewById(R.id.set_date_time).setVisibility(View.VISIBLE);
+				}
+				else {
+					findViewById(R.id.set_date_time).setVisibility(View.GONE);
+				}
+				if (column.getDataType() == DataType.TEXT) {
+					findViewById(R.id.set_text).setVisibility(View.VISIBLE);
+				}
+				else {
+					findViewById(R.id.set_text).setVisibility(View.GONE);
+				}
+				// Load the applicable operators for this column
+				operators.clear();
+				for (Operator o : column.getOperators())
+					operators.add(o);
+				operatorAdapter.notifyDataSetChanged();
+				operatorSpinner.setSelection(0);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+				
+			}
+		});
+		
+		operators = new ArrayList<Operator>();
+		operatorSpinner = (Spinner) findViewById(R.id.operator_spinner);
+		operatorAdapter = new ArrayAdapter<Operator>(this, R.layout.location_spinner_item, operators);
+		operatorSpinner.setAdapter(operatorAdapter);
+		operatorSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 
 	private class FilterAdapter extends ArrayAdapter<Filter> implements OnClickListener
@@ -77,19 +141,5 @@ public class FilterActivity extends Activity implements OnItemSelectedListener
 			filters.remove((int) (Integer) v.getTag());
 			notifyDataSetChanged();
 		}
-	}
-
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void onNothingSelected(AdapterView<?> parent)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 }

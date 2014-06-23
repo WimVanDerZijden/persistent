@@ -1,8 +1,11 @@
 package nl.saxion.persistent.controller;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.saxion.persistent.model.Column;
+import nl.saxion.persistent.model.Event;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -23,7 +26,8 @@ public class Filter
 			filters = new ArrayList<Filter>();
 			if (tableName.equals("Event")) {
 				// TODO fix this filter (Create a view Event_v with a bool for IsInFuture)
-				Filter filter = new Filter("Date and Time", "datetime", Operator.GREATER_THAN, System.currentTimeMillis());
+				Column[] eventCols = Column.get(Event.TABLE_NAME);
+				Filter filter = new Filter(eventCols[0], Operator.GREATER_THAN, System.currentTimeMillis());
 				filters.add(filter);
 			}
 			else {
@@ -42,57 +46,46 @@ public class Filter
 		return filters;
 	}
 	
-	private String name;
-	private String columnName;
+	private Column column;
 	private Operator operator;
 	private Object value;
 	
 	public enum Operator
 	{
-		EQUAL, NOT_EQUAL, GREATER_THAN, LESS_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN_OR_EQUAL
+		EQUAL(" = "),
+		NOT_EQUAL(" != "),
+		GREATER_THAN(" > "),
+		LESS_THAN(" < "),
+		GREATER_THAN_OR_EQUAL (" >= "),
+		LESS_THAN_OR_EQUAL(" <= ");
+		
+		private String name;
+		
+		private Operator(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
 
-	public Filter(String name, String columnName, Operator operator, Object value)
+	public Filter(Column column, Operator operator, Object value)
 	{
-		this.name = name;
-		this.columnName = columnName;
+		this.column = column;
 		this.operator = operator;
 		this.value = value;
 	}
 	
 	public String getSQL()
 	{
-		return " " + getColumnName() + getOperatorSQL() + "?";
-	}
-
-	public String getColumnName()
-	{
-		return columnName;
+		return " " + column.getColumnName() + operator.toString() + "?";
 	}
 
 	public Operator getOperator()
 	{
 		return operator;
-	}
-	
-	public String getOperatorSQL()
-	{
-		switch (operator)
-		{
-		case EQUAL:
-			return " = ";
-		case NOT_EQUAL:
-			return " != ";
-		case GREATER_THAN:
-			return " > ";
-		case LESS_THAN:
-			return " < ";
-		case GREATER_THAN_OR_EQUAL:
-			return " >= ";
-		case LESS_THAN_OR_EQUAL:
-			return " <= ";
-		}
-		throw new IllegalStateException("Unknown operator");
 	}
 
 	public Object getValue()
@@ -102,7 +95,26 @@ public class Filter
 	
 	public String getDisplayString() {
 		// TODO resolve value
-		return name + getOperatorSQL() + value;
+		String result = column.getName() + operator.toString();
+		switch(column.getDataType())
+		{
+		case TIMESTAMP:
+			return result + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(value);
+		case EVENT:
+			break;
+		case LOCATION:
+			break;
+		case NUMBER:
+			break;
+		case TEXT:
+			return result + value;
+		case USER:
+			break;
+		default:
+			break;
+		}
+		return result;
+		//+ value;
 	}
 	
 }
