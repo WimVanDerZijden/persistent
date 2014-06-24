@@ -128,6 +128,8 @@ public class Filter
 
 	public Object getValue()
 	{
+		if (column.getDataType() == DataType.NUMBER)
+			return getValueAsInt();
 		return value;
 	}
 
@@ -143,6 +145,7 @@ public class Filter
 			break;
 		case NUMBER:
 			result += getValueAsInt();
+			break;
 		case TEXT:
 			// Text is stored with prefix and postfix %, which is cut here.
 			result += value.toString().substring(1, value.toString().length() - 1);

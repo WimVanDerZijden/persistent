@@ -17,18 +17,20 @@ public class Column
 	 * 
 	 */
 	static {
-		Column[] eventColumns = new Column[6];
-		eventColumns[0] = new Column("Date and time","datetime",DataType.TIMESTAMP);
-		eventColumns[1] = new Column("Name","name",DataType.TEXT);
-		eventColumns[2] = new Column("Min Participants","minparticipants", DataType.NUMBER);
-		eventColumns[3] = new Column("Max Participants","maxparticipants", DataType.NUMBER);
-		eventColumns[4] = new Column("Location","location_id", TableName.LOCATION);
-		eventColumns[5] = new Column("Initiator","user_id", TableName.USER);
+		int n;
+		Column[] cols;
 		
- 		COLUMNS.put(TableName.EVENT, eventColumns);
+		cols = new Column[n = 7];
+		cols[--n] = new Column("Initiator","user_id", TableName.USER);
+		cols[--n] = new Column("Location","location_id", TableName.LOCATION);
+		cols[--n] = new Column("Max Participants","maxparticipants", DataType.NUMBER);
+		cols[--n] = new Column("Min Participants","minparticipants", DataType.NUMBER);
+		cols[--n] = new Column("Registered","registered", DataType.NUMBER);
+		cols[--n] = new Column("Date and time","datetime",DataType.TIMESTAMP);
+		cols[--n] = new Column("Name","name",DataType.TEXT);
+ 		COLUMNS.put(TableName.EVENT, cols);
 		
 		Operator[] ops;
-		int n;
 		
 		ops = new Operator[n = 2];
 		ops[--n] = Operator.BEFORE;

@@ -27,6 +27,8 @@ public class Event extends Table{
 	private Long datetime2;
 	private Long datetime3;
 	
+	private Integer registered;
+	
 	///** The users who registered for this event */
 	//private List<User> users;
 	
@@ -46,6 +48,7 @@ public class Event extends Table{
 		id = cursor.getInt(9);
 		user = User.getById(cursor.getInt(10));
 		location = Location.getById(cursor.getInt(11));
+		registered = cursor.getInt(12);
 	}
 
 	public int getId() {
@@ -74,14 +77,15 @@ public class Event extends Table{
 	 */
 	public static List<Event> get(List<Filter> filters)
 	{
-		String sql = "SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id "
-				+ "FROM Event "
+		String sql = "SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
+				+ "FROM Event_v "
 				+ "WHERE";
 		List<Object> params = new ArrayList<Object>();
 		if (filters != null) {
 			for (Filter filter : filters) {
 				sql += filter.getSQL();
 				sql += " AND";
+				Log.i("Event","Value=" + filter.getValue());
 				if (filter.getValue() != null)
 					params.add(filter.getValue());
 			}
@@ -97,12 +101,15 @@ public class Event extends Table{
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
+		for (Event e : eventList) {
+			Log.i(e.getName(),"" + e.getRegistered());
+		}
 		return eventList;
 	}
 	
 	public static Event getById(int id) {
-		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id "
-				+ "FROM Event "
+		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
+				+ "FROM Event_v "
 				+ "WHERE id = ?", id);
 		Event event = cursor.moveToFirst() ? new Event(cursor) : null;
 		cursor.close();
@@ -206,6 +213,10 @@ public class Event extends Table{
 
 	public Long getDatetime3() {
 		return datetime3;
+	}
+	
+	public Integer getRegistered() {
+		return registered;
 	}
 	
 	/**

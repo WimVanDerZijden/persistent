@@ -80,7 +80,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 			HashMap<String, String> m = new HashMap<String, String>();
 			m.put("Name", event.getName());
 			m.put("Date", DateFormat.getDateInstance().format(event.getDatetime()));
-			m.put("Availability", "" + event.getUsers().size() + " / " + event.getLocation().getCapacity());
+			m.put("Availability", "" + event.getUsers().size() + " / " + event.getMaxparticipants());
 			result.add(m);
 		}
 	}
