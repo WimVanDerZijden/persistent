@@ -9,6 +9,7 @@ import nl.saxion.persistent.R;
 import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.model.Event;
 import nl.saxion.persistent.model.User;
+import nl.saxion.persistent.model.Table.TableName;
 import nl.saxion.persistent.view.MainActivity;
 import nl.saxion.persistent.view.MyArrayAdapter;
 import android.app.AlertDialog;
@@ -56,7 +57,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	
 	private void refresh()
 	{
-		List<Filter> filters = Filter.get(Event.TABLE_NAME, getActivity());
+		List<Filter> filters = Filter.get(TableName.EVENT, getActivity());
 		events = Event.get(filters);
 		updateGroupList(groupList);
 		updateChildList(childList);
@@ -169,27 +170,32 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	}
 
 	/**
-	 * Create a dialog with a list of people currently signed up for the event
+	 * Create a dialog with a list of people currently signed up for the event.
+	 * Show a message if no people are currently signed up.
 	 * 
 	 * @param groupPosition The position of this event in the list of events
 	 */
 	private void createPeopleSignedUpDialog(int groupPosition) {
 		final ListView peopleListView = new ListView(getActivity());
-		
-		MyArrayAdapter aa = new MyArrayAdapter(getActivity(), events.get(groupPosition).getUsers());
-		peopleListView.setAdapter(aa);
-		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-		.setView(peopleListView)
-		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-		{
-			@Override
-			public void onClick(DialogInterface dialog, int which)
-			{
-				dialog.cancel();
-			}
-		})
-		.create();
-		alertDialog.show();
+		if (events.get(groupPosition).getUsers().size() > 0) {
+			MyArrayAdapter aa = new MyArrayAdapter(getActivity(), events.get(groupPosition).getUsers());
+			peopleListView.setAdapter(aa);
+			final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+					.setView(peopleListView)
+					.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+					{
+						@Override
+						public void onClick(DialogInterface dialog, int which)
+						{
+							dialog.cancel();
+						}
+					})
+					.create();
+			alertDialog.show();
+		}
+		else {
+			Toast.makeText(getActivity(), "No people currently signed up", Toast.LENGTH_SHORT).show();
+		}
 	}
 	/**
 	 * Create a dialog with all the additional information about a event
@@ -199,8 +205,11 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	private void createDetailsDialog(int groupPosition) {
 		Event event = events.get(groupPosition);
 		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
-		final String dialogMessage = "Description:" + event.getDescription() + "\nTime: " + tf.format(event.getDatetime())
-				+ " - " + tf.format(event.getDatetime() + event.getDuration()) + "\nLocation: " + event.getLocation().getName();
+		final String dialogMessage = "Description:" + event.getDescription()
+				+ "\nTime: " + tf.format(event.getDatetime()) + " - " + tf.format(event.getDatetime() + event.getDuration())
+				+ "\nLocation: " + event.getLocation().getName()
+				+ "\nInitiator: " + event.getUser().getName()
+				+ "\nMin/Max Participants: " + event.getMinparticipants() + "/" + event.getMaxparticipants();
 		final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 		.setMessage(dialogMessage)
 		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()

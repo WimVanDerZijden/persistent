@@ -6,11 +6,14 @@ import java.util.List;
 
 import nl.saxion.persistent.model.Column;
 import nl.saxion.persistent.model.Column.DataType;
-import nl.saxion.persistent.model.Event;
+import nl.saxion.persistent.model.Table;
+import nl.saxion.persistent.model.Table.TableName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -18,25 +21,25 @@ import com.google.gson.reflect.TypeToken;
 
 public class Filter
 {
-	public static List<Filter> get(String tableName, Context ctx)
+	public static List<Filter> get(TableName tableName, Context ctx)
 	{
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
-		String json = prefs.getString(tableName, null);
+		String json = prefs.getString(tableName.name(), null);
 		List<Filter> filters;
 		if (json == null) {
 			// Set default filter
 			filters = new ArrayList<Filter>();
-			if (tableName.equals("Event")) {
+			Column[] cols = Column.get(tableName);
+			if (tableName == TableName.EVENT) {
 				// TODO fix this filter (Create a view Event_v with a bool for IsInFuture)
-				Column[] eventCols = Column.get(Event.TABLE_NAME);
-				Filter filter = new Filter(eventCols[0], Operator.GREATER_THAN, System.currentTimeMillis());
+				Filter filter = new Filter(cols[0], Operator.GREATER_THAN, System.currentTimeMillis());
 				filters.add(filter);
 			}
 			else {
 				Log.i("Filter", "No default filter found for: " + tableName);
 			}
 			Editor editor = prefs.edit();
-			editor.putString(tableName, new Gson().toJson(filters));
+			editor.putString(tableName.name(), new Gson().toJson(filters));
 			editor.commit();
 		}
 		else {
@@ -45,16 +48,15 @@ public class Filter
 			Log.i("Filter", json);
 			filters = new Gson().fromJson(json, new TypeToken<ArrayList<Filter>>() {
 			}.getType());
-			Log.i("Filter", "Filter loaded for: " + tableName);
+			Log.i("Filter", "Filter loaded for: " + tableName.toString());
 		}
 		return filters;
 	}
 
-	public static void save(String tableName, Context ctx, List<Filter> filters) {
+	public static void save(TableName tableName, Context ctx, List<Filter> filters) {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx.getApplicationContext());
-		;
 		Editor editor = prefs.edit();
-		editor.putString(tableName, new Gson().toJson(filters));
+		editor.putString(tableName.name(), new Gson().toJson(filters));
 		editor.commit();
 	}
 
@@ -64,14 +66,18 @@ public class Filter
 
 	public enum Operator
 	{
-		EQUAL(" = "),
-		NOT_EQUAL(" != ", "\u2260"),
+		EQUAL(" = ", "is"),
+		NOT_EQUAL(" != ", "isn't"),
 		GREATER_THAN(" > "),
 		LESS_THAN(" < "),
-		GREATER_THAN_OR_EQUAL(" >= ", "\u2265"),
-		LESS_THAN_OR_EQUAL(" <= ", "\u2264"),
-		LIKE(" LIKE ", "\u2248"),
-		NOT_LIKE(" NOT LIKE ", "\u2260");
+		GREATER_THAN_OR_EQUAL(" >= ", "at least"),
+		LESS_THAN_OR_EQUAL(" <= ", "at most"),
+		LIKE(" LIKE ", "contains"),
+		NOT_LIKE(" NOT LIKE ", "doesn't contain"),
+		IS_TRUE(" = TRUE ", "Yes"),
+		IS_FALSE(" = FALSE ", "No"),
+		BEFORE(" < ", "before"),
+		AFTER(" > ", "after");
 
 		private String name;
 		private String sql;
@@ -109,6 +115,9 @@ public class Filter
 	{
 		if (column.getDataType() == DataType.TEXT)
 			return " UPPER(" + column.getColumnName() + ")" + operator.getSQL() + "UPPER(?)";
+		if (column.getDataType() == DataType.BOOLEAN)
+			return " " + column.getColumnName() + operator.getSQL();
+		// Default (Reference, )
 		return " " + column.getColumnName() + operator.getSQL() + "?";
 	}
 
@@ -122,29 +131,53 @@ public class Filter
 		return value;
 	}
 
-	public String getDisplayString() {
-		String opString = operator.toString();
-		String result = column.getName() + opString;
+	public Spanned getDisplayHtml() {
+		String result = "<b>" + column.getName() + "</b> <i>" + operator.toString() + "</i> ";
 		switch (column.getDataType())
 		{
 		case TIMESTAMP:
-			return result + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(value);
-		case EVENT:
+			result += DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(getValueAsLong());
 			break;
-		case LOCATION:
+		case REFERENCE:
+			result += Table.getById(column.getTableName(), getValueAsInt());
 			break;
 		case NUMBER:
-			break;
+			result += getValueAsInt();
 		case TEXT:
 			// Text is stored with prefix and postfix %, which is cut here.
-			return result + value.toString().substring(1, value.toString().length() - 1);
-		case USER:
+			result += value.toString().substring(1, value.toString().length() - 1);
 			break;
-		default:
+		case BOOLEAN:
 			break;
 		}
-		return result;
-		//+ value;
+		Log.i("Filter", result);
+		Spanned s = Html.fromHtml(result);
+		Log.i("Filter_Spanned", s.toString());
+		return s;	
+	}
+
+	/**
+	 * Value may be parsed from json by Gson. Gson doesn't know that the value was
+	 * originally an Integer. Therefore we cast to Number instead of to Integer.
+	 * 
+	 * This throws an Exception if value cannot be cast to Number.
+	 * 
+	 * @return
+	 */
+	public Integer getValueAsInt() {
+		return ((Number) value).intValue();
+	}
+
+	/**
+	 * Value may be parsed from json by Gson. Gson doesn't know that the value was
+	 * originally a Long. Therefore we cast to Number instead of to Long.
+	 * 
+	 * This throws an Exception if value cannot be cast to Number.
+	 * 
+	 * @return
+	 */
+	public Long getValueAsLong() {
+		return ((Number) value).longValue();
 	}
 
 }

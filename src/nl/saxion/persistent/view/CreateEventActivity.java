@@ -86,7 +86,7 @@ public class CreateEventActivity extends Activity implements
 		if (locations == null)
 			locations = Location.getAll();
 		
-		locationAdapter = new ArrayAdapter<Location>(this, R.layout.location_spinner_item, locations);
+		locationAdapter = new ArrayAdapter<Location>(this, R.layout.spinner_item, locations);
 		locationSpinner.setAdapter(locationAdapter);
 		locationSpinner.setOnItemSelectedListener(this);
 		

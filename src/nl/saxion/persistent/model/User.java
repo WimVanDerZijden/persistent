@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.saxion.persistent.view.MainActivity;
+import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.view.mainfragment.LoginFragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
@@ -13,7 +13,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-public class User {
+public class User extends Table {
 	private int id;
 	private String name;
 	// private Uri photo;
@@ -44,7 +44,7 @@ public class User {
 	 * @param id
 	 * @return
 	 */
-	public static User get(int id) {
+	public static User getById(int id) {
 		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User WHERE id = ?", id);
 		User user = cursor.moveToFirst() ? new User(cursor) : null;
 		cursor.close();
@@ -58,8 +58,20 @@ public class User {
 	 */
 	public static List<User> getAll()
 	{
+		return get(null);
+	}
+	
+	/**
+	 * Get users filtered
+	 * 
+	 * @param filters
+	 * @return
+	 */
+	
+	public static List<User> get(List<Filter> filters) {
+		// TODO impl filters
 		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User");
-		return getAll(cursor);
+		return getAll(cursor);		
 	}
 	
 	/**
@@ -172,9 +184,13 @@ public class User {
 		}
 	}
 	
+	/**
+	 * User friendly display string for use in Spinners and such
+	 * 
+	 */
 	public String toString()
 	{
-		return "name=" +name + ", email=" + email; 
+		return name;
 	}
 
 }

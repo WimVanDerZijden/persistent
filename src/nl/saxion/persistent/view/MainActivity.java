@@ -3,6 +3,7 @@ package nl.saxion.persistent.view;
 import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.DB;
 import nl.saxion.persistent.model.Event;
+import nl.saxion.persistent.model.Table.TableName;
 import nl.saxion.persistent.model.User;
 import nl.saxion.persistent.view.mainfragment.MainFragment;
 import nl.saxion.persistent.view.mainfragment.RegisterDialogFragment;
@@ -171,7 +172,7 @@ public class MainActivity extends Activity
 		}
 		if (id == R.id.action_filter_event) {
 			Intent intent = new Intent(this,FilterActivity.class);
-			intent.putExtra("TableName", Event.TABLE_NAME);
+			intent.putExtra("TableName", TableName.EVENT);
 			startActivity(intent);
 		}
 		return super.onOptionsItemSelected(item);

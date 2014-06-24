@@ -10,10 +10,12 @@ import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.controller.Filter.Operator;
 import nl.saxion.persistent.model.Column;
 import nl.saxion.persistent.model.Column.DataType;
+import nl.saxion.persistent.model.Table;
+import nl.saxion.persistent.model.Table.TableName;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
@@ -38,29 +40,51 @@ import android.widget.TimePicker;
 
 public class FilterActivity extends Activity
 {
+	// Statics
 	private static Calendar date;
 	private static Calendar time;
 
+	// Filters
+	private TableName tableName;
 	private List<Filter> filters;
 	private FilterAdapter filterAdapter;
-	private String tableName;
 
+	// Columns
 	private Spinner columnSpinner;
 	private Column[] columns;
 
+	// Operators
 	private Spinner operatorSpinner;
 	private ArrayAdapter<Operator> operatorAdapter;
 	private List<Operator> operators;
+
+	// Views for values
+	private View dateLayout;
+	private EditText numberField;
+	private TextView dateField;
+	private TextView timeField;
+	private EditText textField;
+	private Spinner referenceSpinner;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		// Set home button as back
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
 		setContentView(R.layout.activity_filter);
-		tableName = (String) getIntent().getExtras().get("TableName");
+		// Load views for displaying values into instance vars
+		dateLayout = findViewById(R.id.set_date_time);
+		dateField = (TextView) findViewById(R.id.date_view);
+		timeField = (TextView) findViewById(R.id.time_view);
+		textField = (EditText) findViewById(R.id.set_text);
+		numberField = (EditText) findViewById(R.id.set_number);
+		referenceSpinner = (Spinner) findViewById(R.id.set_reference);
+
+		// Load Filters
+		tableName = (TableName) getIntent().getExtras().getSerializable("TableName");
 		filters = Filter.get(tableName, this);
 		ListView filterList = (ListView) findViewById(R.id.filter_list);
 		filterAdapter = new FilterAdapter(this, filters);
@@ -68,7 +92,7 @@ public class FilterActivity extends Activity
 
 		columns = Column.get(tableName);
 		columnSpinner = (Spinner) findViewById(R.id.column_spinner);
-		ArrayAdapter<Column> adapter = new ArrayAdapter<Column>(this, R.layout.location_spinner_item, columns);
+		ArrayAdapter<Column> adapter = new ArrayAdapter<Column>(this, R.layout.spinner_item, columns);
 		columnSpinner.setAdapter(adapter);
 		columnSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -78,16 +102,39 @@ public class FilterActivity extends Activity
 				// Hide and show the applicable value fields for this data type
 				Column column = (Column) parent.getItemAtPosition(position);
 				if (column.getDataType() == DataType.TIMESTAMP) {
-					findViewById(R.id.set_date_time).setVisibility(View.VISIBLE);
+					dateLayout.setVisibility(View.VISIBLE);
+					// Reset possible leftover values
+					dateField.setError(null);
+					dateField.setText("");
+					timeField.setText("");
+					date = null;
+					time = null;
 				}
 				else {
-					findViewById(R.id.set_date_time).setVisibility(View.GONE);
+					dateLayout.setVisibility(View.GONE);
 				}
 				if (column.getDataType() == DataType.TEXT) {
-					findViewById(R.id.set_text).setVisibility(View.VISIBLE);
+					textField.setVisibility(View.VISIBLE);
+					textField.setText("");
+					textField.setError(null);
 				}
 				else {
-					findViewById(R.id.set_text).setVisibility(View.GONE);
+					textField.setVisibility(View.GONE);
+				}
+				if (column.getDataType() == DataType.NUMBER) {
+					numberField.setVisibility(View.VISIBLE);
+					numberField.setText("");
+					numberField.setError(null);
+				}
+				else {
+					numberField.setVisibility(View.GONE);
+				}
+				if (column.getDataType() == DataType.REFERENCE) {
+					referenceSpinner.setVisibility(View.VISIBLE);
+					referenceSpinner.setAdapter(new ArrayAdapter<Table>(FilterActivity.this, R.layout.spinner_item, column.getValues()));
+				}
+				else {
+					referenceSpinner.setVisibility(View.GONE);
 				}
 				// Load the applicable operators for this column
 				operators.clear();
@@ -100,33 +147,14 @@ public class FilterActivity extends Activity
 			@Override
 			public void onNothingSelected(AdapterView<?> parent)
 			{
-
 			}
 		});
 
 		operators = new ArrayList<Operator>();
 		operatorSpinner = (Spinner) findViewById(R.id.operator_spinner);
-		operatorAdapter = new ArrayAdapter<Operator>(this, R.layout.location_spinner_item, operators);
+		operatorAdapter = new ArrayAdapter<Operator>(this, R.layout.spinner_item, operators);
 		operatorSpinner.setAdapter(operatorAdapter);
-		operatorSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parent)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-		});
-
-		final TextView dateField = (TextView) findViewById(R.id.date_view);
 		dateField.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -156,7 +184,6 @@ public class FilterActivity extends Activity
 		if (date != null)
 			dateField.setText(DateFormat.getDateInstance().format(date.getTime()));
 
-		final TextView timeField = (TextView) findViewById(R.id.time_view);
 		timeField.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -196,17 +223,34 @@ public class FilterActivity extends Activity
 				Operator operator = (Operator) operatorSpinner.getSelectedItem();
 				boolean valid = true;
 				switch (column.getDataType()) {
-				case EVENT:
-					break;
-				case LOCATION:
+				case REFERENCE:
+					Table r_value = (Table) referenceSpinner.getSelectedItem();
+					filters.add(new Filter(column, operator, r_value.getId()));
 					break;
 				case NUMBER:
+					try {
+						Integer n_value = Integer.parseInt(numberField.getText().toString());
+						numberField.setText("");
+						numberField.setError(null);
+						filters.add(new Filter(column, operator, n_value));
+					}
+					catch (NumberFormatException nfe) {
+						numberField.setError("Invalid Number");
+						valid = false;
+					}
 					break;
 				case TEXT:
-					String value = ((EditText) findViewById(R.id.set_text)).getText().toString();
-					((EditText) findViewById(R.id.set_text)).setText("");
-					Filter filter = new Filter(column, operator, "%" + value + "%");
-					filters.add(filter);
+					String t_value = textField.getText().toString();
+					if (t_value.length() == 0) {
+						textField.setError("Text is required");
+						valid = false;
+					}
+					else {
+						textField.setText("");
+						textField.setError(null);
+						Filter filter = new Filter(column, operator, "%" + t_value + "%");
+						filters.add(filter);
+					}
 					break;
 				case TIMESTAMP:
 					if (date == null) {
@@ -226,14 +270,13 @@ public class FilterActivity extends Activity
 						time = null;
 						dateField.setText("");
 						timeField.setText("");
+						dateField.setError(null);
 					}
 					break;
-				case USER:
-					break;
-				default:
+				case BOOLEAN:
 					break;
 				}
-				// Save filters to local preferences
+				// Save filters to local preferences and clear all errors
 				if (valid) {
 					Filter.save(tableName, FilterActivity.this, filters);
 					filterAdapter.notifyDataSetChanged();
@@ -246,13 +289,13 @@ public class FilterActivity extends Activity
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem)
-	{       
-	    if (menuItem.getItemId() == android.R.id.home){
-	    	onBackPressed();
-	    }
-	    return true;
+	{
+		if (menuItem.getItemId() == android.R.id.home) {
+			onBackPressed();
+		}
+		return true;
 	}
-	
+
 	@Override
 	public void onBackPressed()
 	{
@@ -282,7 +325,7 @@ public class FilterActivity extends Activity
 			if (view == null)
 				view = inflater.inflate(RESOURCE_ID, null);
 			TextView textView = ((TextView) view.findViewById(R.id.filter_text));
-			textView.setText(filters.get(position).getDisplayString());
+			textView.setText(filters.get(position).getDisplayHtml());
 
 			View deleteButton = view.findViewById(R.id.delete_button);
 			deleteButton.setTag(position);

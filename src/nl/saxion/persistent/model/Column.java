@@ -5,29 +5,34 @@ import java.util.List;
 import java.util.Map;
 
 import nl.saxion.persistent.controller.Filter.Operator;
+import nl.saxion.persistent.model.Table.TableName;
 
 public class Column
 {
-	private static final Map<String,Column[]> COLUMNS = new HashMap<String, Column[]>();
+	private static final Map<TableName,Column[]> COLUMNS = new HashMap<TableName, Column[]>();
 	private static final Map<DataType,Operator[]> OPERATORS = new HashMap<DataType, Operator[]>();
 	
-	static
-	{
+	/**
+	 * Initializes the static data structure
+	 * 
+	 */
+	static {
 		Column[] eventColumns = new Column[6];
 		eventColumns[0] = new Column("Date and time","datetime",DataType.TIMESTAMP);
 		eventColumns[1] = new Column("Name","name",DataType.TEXT);
 		eventColumns[2] = new Column("Min Participants","minparticipants", DataType.NUMBER);
 		eventColumns[3] = new Column("Max Participants","maxparticipants", DataType.NUMBER);
-		eventColumns[4] = new Column("Location","location_id", DataType.LOCATION);
-		eventColumns[5] = new Column("Organized By","user_id", DataType.USER);
+		eventColumns[4] = new Column("Location","location_id", TableName.LOCATION);
+		eventColumns[5] = new Column("Initiator","user_id", TableName.USER);
 		
- 		COLUMNS.put(Event.TABLE_NAME, eventColumns);
+ 		COLUMNS.put(TableName.EVENT, eventColumns);
 		
 		Operator[] ops;
 		int n;
+		
 		ops = new Operator[n = 2];
-		ops[--n] = Operator.GREATER_THAN;
-		ops[--n] = Operator.LESS_THAN;
+		ops[--n] = Operator.BEFORE;
+		ops[--n] = Operator.AFTER;
 		OPERATORS.put(DataType.TIMESTAMP, ops);
 		
 		ops = new Operator[n = 2];
@@ -35,20 +40,20 @@ public class Column
 		ops[--n] = Operator.LIKE;
 		OPERATORS.put(DataType.TEXT, ops);
 		
-		ops = new Operator[n = 6];
-		ops[--n] = Operator.EQUAL;
-		ops[--n] = Operator.NOT_EQUAL;
+		ops = new Operator[n = 2];
 		ops[--n] = Operator.LESS_THAN_OR_EQUAL;
 		ops[--n] = Operator.GREATER_THAN_OR_EQUAL;
-		ops[--n] = Operator.LESS_THAN;
-		ops[--n] = Operator.GREATER_THAN;
 		OPERATORS.put(DataType.NUMBER, ops);
 		
 		ops = new Operator[n = 2];
 		ops[--n] = Operator.NOT_EQUAL;
 		ops[--n] = Operator.EQUAL;
-		OPERATORS.put(DataType.LOCATION, ops);
-		OPERATORS.put(DataType.USER, ops);
+		OPERATORS.put(DataType.REFERENCE, ops);
+		
+		ops = new Operator[n = 2];
+		ops[--n] = Operator.IS_FALSE;
+		ops[--n] = Operator.IS_TRUE;
+		OPERATORS.put(DataType.BOOLEAN, ops);
 	}
 	
 	/**
@@ -58,8 +63,7 @@ public class Column
 	 * @return
 	 */
 	
-	public static Column[] get(String tableName)
-	{
+	public static Column[] get(TableName tableName)	{
 		// Immutable, so return a clone
 		return COLUMNS.get(tableName).clone();
 	}
@@ -67,17 +71,29 @@ public class Column
 	private String name;
 	private String columnName;
 	private DataType dataType;
-
-	public enum DataType
-	{
-		TIMESTAMP, TEXT, NUMBER, USER, LOCATION, EVENT
+	/** The table referenced. Only to be used if data type is reference. */
+	private TableName tableName;
+	
+	public enum DataType {
+		TIMESTAMP, TEXT, NUMBER, REFERENCE, BOOLEAN
 	}
 	
-	public Column(String name, String columnName, DataType dataType)
-	{
+	public Column(String name, String columnName, DataType dataType) {
 		this.name = name;
 		this.columnName = columnName;
 		this.dataType = dataType;
+	}
+	
+	/**
+	 * Constructor for reference column
+	 * 
+	 * @param name
+	 * @param columnName
+	 * @param tableName
+	 */
+	public Column(String name, String columnName, TableName tableName) {
+		this(name,columnName, DataType.REFERENCE);
+		this.tableName = tableName; 
 	}
 	
 	/**
@@ -85,31 +101,39 @@ public class Column
 	 * 
 	 * @return
 	 */
-	public Operator[] getOperators()
-	{
+	public Operator[] getOperators() {
 		// Immutable, so return a clone
 		return OPERATORS.get(dataType).clone();
 	}
 	
+	/**
+	 * Get all possible values for this column.
+	 * Only for reference data type.
+	 * 
+	 * @return
+	 */
+	public List<Table> getValues() {
+		return Table.get(tableName, null);
+	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public String getColumnName()
-	{
+	public String getColumnName() {
 		return columnName;
 	}
 
-	public DataType getDataType()
-	{
+	public DataType getDataType() {
 		return dataType;
 	}
 	
+	public TableName getTableName() {
+		return tableName;
+	}
+	
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return name;
 	}
 

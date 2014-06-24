@@ -8,7 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
-public class Event {
+public class Event extends Table{
 	
 	public static final String TABLE_NAME = "Event";
 	
@@ -44,8 +44,8 @@ public class Event {
 		datetime2 = cursor.getLong(7);
 		datetime3 = cursor.getLong(8);
 		id = cursor.getInt(9);
-		user = User.get(cursor.getInt(10));
-		location = Location.get(cursor.getInt(11));
+		user = User.getById(cursor.getInt(10));
+		location = Location.getById(cursor.getInt(11));
 	}
 
 	public int getId() {
@@ -82,7 +82,8 @@ public class Event {
 			for (Filter filter : filters) {
 				sql += filter.getSQL();
 				sql += " AND";
-				params.add(filter.getValue());
+				if (filter.getValue() != null)
+					params.add(filter.getValue());
 			}
 		}
 		// Remove the last word from the query (WHERE or AND)
@@ -97,6 +98,15 @@ public class Event {
 		}
 		cursor.close();
 		return eventList;
+	}
+	
+	public static Event getById(int id) {
+		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id "
+				+ "FROM Event "
+				+ "WHERE id = ?", id);
+		Event event = cursor.moveToFirst() ? new Event(cursor) : null;
+		cursor.close();
+		return event;
 	}
 	
 	/**
@@ -122,7 +132,8 @@ public class Event {
 		}
 	}
 	/**
-	 * removing a user from an event by removing a row from the invite table 
+	 * Removing a user from an event by removing a row from the invite table.
+	 *  
 	 * @param user
 	 * @return
 	 */
@@ -210,6 +221,10 @@ public class Event {
 		return location;
 	}
 	
+	/**
+	 * User friendly display string for use in Spinners and such
+	 * 
+	 */
 	@Override
 	public String toString()
 	{
