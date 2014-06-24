@@ -2,10 +2,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#DDD"
     android:orientation="vertical"
     tools:context="nl.saxion.persistent.view.CreateEventActivity"
-    tools:ignore="MergeRootFrame"
-    android:background="#DDD" >
+    tools:ignore="MergeRootFrame" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/cancel_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="cancelButtonPressed"
+            android:text="@android:string/cancel" />
+
+        <Button
+            android:id="@+id/ok_button"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="okButtonPressed"
+            android:text="@android:string/ok" />
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollView1"
@@ -15,26 +38,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#FFF" >
+            android:background="#FFF"
+            android:orientation="vertical" >
 
             <EditText
                 android:id="@+id/event_name_field"
-                android:hint="@string/event_name_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:layout_margin="8dp" >
-
-                <requestFocus />
-            </EditText>
-
-            <Spinner
-                android:id="@+id/event_type_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:entries="@array/event_types" />
+                android:ems="10"
+                android:hint="@string/event_name_field" >
+
+                <requestFocus />
+            </EditText>
 
             <EditText
                 android:id="@+id/event_description_field"
@@ -46,56 +62,58 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date_text_view"
-                android:layout_marginLeft="8dp" />
-			
-            <LinearLayout 
-                android:layout_width="match_parent"
-          		android:layout_height="wrap_content"
-            	android:orientation="horizontal"
-            	android:background="#FFF"
-            	android:layout_margin="8dp">
-                
-            <TextView
-                android:id="@+id/date1_view"
-                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                android:layout_marginLeft="8dp"
+                android:text="@string/date_text_view" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="date1Pressed" />
-            
+                android:layout_margin="8dp"
+                android:background="#FFF"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/date1_view"
+                    style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="date1Pressed" />
             </LinearLayout>
-            
-            <LinearLayout 
-                android:layout_width="match_parent"
-          		android:layout_height="wrap_content"
-            	android:orientation="horizontal"
-            	android:background="#FFF"
-            	android:layout_margin="8dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/from_text_view"
-                android:layout_marginLeft="8dp" />   
-            <TextView
-                android:id="@+id/time1_from_view"
-                style="@android:style/Widget.DeviceDefault.Light.Spinner"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="time1FromPressed" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/to_text_view"
-                android:layout_marginLeft="8dp" />
-            <TextView
-                android:id="@+id/time1_to_view"
-                style="@android:style/Widget.DeviceDefault.Light.Spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" 
-                android:onClick="time1ToPressed"/>
-            
+                android:layout_margin="8dp"
+                android:background="#FFF"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/from_text_view" />
+
+                <TextView
+                    android:id="@+id/time1_from_view"
+                    style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="time1FromPressed" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/to_text_view" />
+
+                <TextView
+                    android:id="@+id/time1_to_view"
+                    style="@android:style/Widget.DeviceDefault.Light.Spinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="time1ToPressed" />
             </LinearLayout>
 
             <Spinner
@@ -108,69 +126,46 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nr_of_participants_field"
-                android:layout_margin="8dp" />
-            
-            <LinearLayout 
-                android:layout_width="match_parent"
-          		android:layout_height="wrap_content"
-            	android:orientation="horizontal"
-            	android:background="#FFF"
-            	android:layout_margin="8dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/min_text_view"
-                android:layout_marginLeft="8dp" />   
-            <EditText
-                android:id="@+id/min_nr_field"
-                android:inputType="number"
+                android:layout_margin="8dp"
+                android:text="@string/nr_of_participants_field" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_weight="1" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/max_text_view"
-                android:layout_marginLeft="8dp" />
-            <EditText
-                android:id="@+id/max_nr_field"
-                android:inputType="number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_weight="1" />
-            
+                android:layout_margin="8dp"
+                android:background="#FFF"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/min_text_view" />
+
+                <EditText
+                    android:id="@+id/min_nr_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1"
+                    android:inputType="number" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:text="@string/max_text_view" />
+
+                <EditText
+                    android:id="@+id/max_nr_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_weight="1"
+                    android:inputType="number" />
             </LinearLayout>
-               <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"
-            android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@android:string/cancel"
-            android:onClick="cancelButtonPressed" />
-
-        <Button
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_weight="1"
-            android:id="@+id/ok_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@android:string/ok"
-            android:onClick="okButtonPressed" />
-
-    </LinearLayout> 
         </LinearLayout>
-        
     </ScrollView>
-
 </LinearLayout>
-

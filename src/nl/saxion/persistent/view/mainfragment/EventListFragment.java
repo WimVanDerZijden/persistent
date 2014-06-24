@@ -206,7 +206,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 		Event event = events.get(groupPosition);
 		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 		final String dialogMessage = "Description:" + event.getDescription()
-				+ "\nTime: " + tf.format(event.getDatetime()) + " - " + tf.format(event.getDatetime() + event.getDuration())
+				+ "\nTime: " + tf.format(event.getDatetime()) + " - " + tf.format(event.getDatetime() + event.getDateTimeTo())
 				+ "\nLocation: " + event.getLocation().getName()
 				+ "\nInitiator: " + event.getUser().getName()
 				+ "\nMin/Max Participants: " + event.getMinparticipants() + "/" + event.getMaxparticipants();

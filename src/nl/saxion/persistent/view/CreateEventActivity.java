@@ -1,6 +1,7 @@
 package nl.saxion.persistent.view;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -84,11 +85,12 @@ public class CreateEventActivity extends Activity implements
 		eventDescriptionField = (EditText) findViewById(R.id.event_description_field);
 		locationSpinner = (Spinner) findViewById(R.id.location_spinner);
 		if (locations == null)
-			locations = Location.getAll();
+			locations = new ArrayList<Location>();
 		
 		locationAdapter = new ArrayAdapter<Location>(this, R.layout.spinner_item, locations);
 		locationSpinner.setAdapter(locationAdapter);
 		locationSpinner.setOnItemSelectedListener(this);
+		updateLocationSpinner();
 		
 		DateFormat df = DateFormat.getDateInstance();
 		DateFormat tf = DateFormat.getTimeInstance();
@@ -117,6 +119,26 @@ public class CreateEventActivity extends Activity implements
 		super.onBackPressed();
 	}
 
+	/**
+	 * This loads the location spinner with available locations for the selected
+	 * date, time from and time to, or hides it when one of these are not known.
+	 * 
+	 */
+	private void updateLocationSpinner() {
+		if (date == null || timeFrom == null || timeTo == null) {
+			locationSpinner.setVisibility(View.GONE);
+		}
+		else {
+			locationSpinner.setVisibility(View.VISIBLE);
+			List<Location> locs = Location.getAvailable(getDateTime(), getDateTimeTo());
+			locations.clear();
+			for (Location loc : locs) {
+				locations.add(loc);
+			}
+			locationAdapter.notifyDataSetChanged();
+		}
+	}
+	
 	/**
 	 * Shows the datepicker dialog
 	 * 
@@ -147,6 +169,7 @@ public class CreateEventActivity extends Activity implements
 		date.set(year, monthOfYear, dayOfMonth);
 		DateFormat df = DateFormat.getDateInstance();
 		dateField.setText(df.format(date.getTime()));
+		updateLocationSpinner();
 	}
 
 	public void showTimePicker(final DialogType dialogType) {
@@ -197,6 +220,7 @@ public class CreateEventActivity extends Activity implements
 		updatedTime.set(Calendar.MINUTE, minute);
 		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 		timeField.setText(tf.format(updatedTime.getTime()));
+		updateLocationSpinner();
 	}
 
 	public void date1Pressed(View v) {
@@ -259,48 +283,40 @@ public class CreateEventActivity extends Activity implements
 			requestfocus = eventNameField;
 			valid = false;
 		}
-		Long datetime = null;
-		Long duration = null;
-		if (date != null) {
-			if (timeFrom != null) {
-				date.set(Calendar.HOUR_OF_DAY, timeFrom.get(Calendar.HOUR_OF_DAY));
-				date.set(Calendar.MINUTE, timeFrom.get(Calendar.MINUTE));
-				if (timeTo != null)
-					duration = timeTo.getTimeInMillis() - timeFrom.getTimeInMillis();
-				else
-				{
-					valid = false;
-					timeToField.setError("Time To is required");
-					requestfocus = timeToField;
-				}
-			}
-			else
-			{
-				timeFromField.setError("Time From is required");
-				requestfocus = timeFromField;
-				valid = false;		
-			}
-			datetime = date.getTimeInMillis();
-		}
-		else
-		{
+		if (date == null) {
 			valid = false;
 			dateField.setError("Date is required");
 			requestfocus = dateField;
 		}
-		if (duration != null && duration <= 0) {
+		if (timeFrom == null) 			{
+			timeFromField.setError("Time From is required");
+			requestfocus = timeFromField;
+			valid = false;		
+		}
+		if (timeTo == null) {
+			valid = false;
+			timeToField.setError("Time To is required");
+			requestfocus = timeToField;
+		}
+		if (date != null && timeTo != null && timeFrom != null && getDateTimeTo() <= getDateTime()) {
 			timeToField.setError("Time To must be higher than Time From");
 			requestfocus = timeToField;
 			valid = false;
 		}
 		String description = eventDescriptionField.getText().toString();
-		Integer minParticipants = null;
+		Integer minParticipants = 0;
 		Integer maxParticipants = null;
-		if (minNrField.getText().length() > 0)
-			minParticipants = Integer.parseInt(minNrField.getText().toString());
-		if (maxNrField.getText().length() > 0)
+		try {
 			maxParticipants = Integer.parseInt(maxNrField.getText().toString());
-		if (maxParticipants != null && minParticipants != null && maxParticipants < minParticipants) {
+			minParticipants = Integer.parseInt(minNrField.getText().toString());
+		}
+		catch (NumberFormatException ignore) {}
+		if (maxParticipants == null) {
+			maxNrField.setError("Max participants is required");
+			valid = false;
+			requestfocus = maxNrField;
+		}
+		if (maxParticipants != null && maxParticipants < minParticipants) {
 			maxNrField.setError("Max Participants must be higher than or equal to Min Participants");
 			requestfocus = maxNrField;
 			valid = false;
@@ -310,7 +326,7 @@ public class CreateEventActivity extends Activity implements
 		}
 		
 		if(valid){
-			if(Event.createEvent(MainActivity.getUser(), name, datetime, duration, maxParticipants, minParticipants, description, location))
+			if(Event.createEvent(MainActivity.getUser(), name, getDateTime(), getDateTimeTo(), maxParticipants, minParticipants, description, location))
 				Toast.makeText(this, "Event created", Toast.LENGTH_SHORT).show();
 			else
 				Toast.makeText(this, "Failed to create event", Toast.LENGTH_SHORT).show();
@@ -318,6 +334,32 @@ public class CreateEventActivity extends Activity implements
 		}
 		else
 			requestfocus.requestFocus();
+	}
+	
+	/**
+	 * Get datetime as long. Only call when both date and timeFrom are not null.
+	 * This modifies date by adding the time.
+	 * 
+	 * @return
+	 */
+	private Long getDateTime() {
+		date.set(Calendar.HOUR_OF_DAY, timeFrom.get(Calendar.HOUR_OF_DAY));
+		date.set(Calendar.MINUTE, timeFrom.get(Calendar.MINUTE));
+		return date.getTimeInMillis();
+	}
+	
+	/**
+	 * Get timeTo as long. Only call when both timeTo and date
+	 * are not null.
+	 * 
+	 * This modifies timeTo by adding the date.
+	 * 
+	 * @return
+	 */
+	
+	private Long getDateTimeTo() {
+		timeTo.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH), date.get(Calendar.DAY_OF_MONTH));;
+		return timeTo.getTimeInMillis();
 	}
 	
 	/**

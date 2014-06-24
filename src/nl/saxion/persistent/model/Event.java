@@ -15,7 +15,7 @@ public class Event extends Table{
 	private int id;
 	private String name;
 	private Long datetime;
-	private Long duration;
+	private Long datetime_to;
 	private Integer maxparticipants; 
 	private Integer minparticipants;
 	
@@ -38,7 +38,7 @@ public class Event extends Table{
 	private Event(Cursor cursor) {
 		name = cursor.getString(0);
 		datetime = cursor.getLong(1);
-		duration = cursor.getLong(2);
+		datetime_to = cursor.getLong(2);
 		maxparticipants = cursor.getInt(3);
 		minparticipants = cursor.getInt(4);
 		description = cursor.getString(5);
@@ -55,10 +55,10 @@ public class Event extends Table{
 		return id;
 	}
 	
-	public static boolean createEvent(User user, String name, Long datetime, Long duration, Integer maxparticipants, Integer minparticipants, String description, Location location){
+	public static boolean createEvent(User user, String name, Long datetime, Long datetime_to, Integer maxparticipants, Integer minparticipants, String description, Location location){
 		try {
-			DB.doIt("INSERT INTO Event (user_id,name,duration,maxparticipants,minparticipants,description,datetime,location_id) VALUES (?,?,?,?,?,?,?,?)",
-					user.getId(), name, duration, maxparticipants, minparticipants, description, datetime, location.getId());
+			DB.doIt("INSERT INTO Event (user_id,name,datetime_to,maxparticipants,minparticipants,description,datetime,location_id) VALUES (?,?,?,?,?,?,?,?)",
+					user.getId(), name, datetime_to, maxparticipants, minparticipants, description, datetime, location.getId());
 			Log.i("Event", "Event created");
 			return true;
 		} catch (SQLiteException e){
@@ -77,7 +77,7 @@ public class Event extends Table{
 	 */
 	public static List<Event> get(List<Filter> filters)
 	{
-		String sql = "SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
+		String sql = "SELECT name, datetime, datetime_to, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
 				+ "FROM Event_v "
 				+ "WHERE";
 		List<Object> params = new ArrayList<Object>();
@@ -85,7 +85,6 @@ public class Event extends Table{
 			for (Filter filter : filters) {
 				sql += filter.getSQL();
 				sql += " AND";
-				Log.i("Event","Value=" + filter.getValue());
 				if (filter.getValue() != null)
 					params.add(filter.getValue());
 			}
@@ -101,14 +100,11 @@ public class Event extends Table{
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
-		for (Event e : eventList) {
-			Log.i(e.getName(),"" + e.getRegistered());
-		}
 		return eventList;
 	}
 	
 	public static Event getById(int id) {
-		Cursor cursor = DB.get("SELECT name, datetime, duration, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
+		Cursor cursor = DB.get("SELECT name, datetime, datetime_to, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
 				+ "FROM Event_v "
 				+ "WHERE id = ?", id);
 		Event event = cursor.moveToFirst() ? new Event(cursor) : null;
@@ -187,8 +183,8 @@ public class Event extends Table{
 		return datetime;
 	}
 
-	public Long getDuration() {
-		return duration;
+	public Long getDateTimeTo() {
+		return datetime_to;
 	}
 
 	public Integer getMaxparticipants() {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import nl.saxion.persistent.controller.Filter;
 import android.database.Cursor;
+import android.util.Log;
 /**
  *
  *
@@ -54,6 +55,23 @@ public class Location extends Table{
 	public static List<Location> getAll() {
 		return get(null);
 	}
+
+	/**
+	 * Get all locations from a cursor
+	 * 
+	 * @param cursor
+	 * @return
+	 */
+	public static List<Location> getAll(Cursor cursor) {
+		List<Location> locationList = new ArrayList<Location>();
+		if (cursor.moveToFirst()) {
+			do {
+				locationList.add(new Location(cursor));
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return locationList;
+	}
 	
 	/**
 	 * Get a filtered list of Locations from database
@@ -65,14 +83,29 @@ public class Location extends Table{
 	public static List<Location> get(List<Filter> filters) {
 		// TODO implement filters
 		Cursor cursor = DB.get("SELECT name, capacity, id FROM Locations");
-		List<Location> locationList = new ArrayList<Location>();
-		if (cursor.moveToFirst()) {
-			do {
-				locationList.add(new Location(cursor));
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return locationList;
+		return getAll(cursor);
+	}
+	
+	/**
+	 * Get all locations that are available for a certain date-time and duration,
+	 * both in milliseconds. 
+	 * 
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	public static List<Location> getAvailable(Long from, Long to) {
+		String sql = "SELECT name, capacity, id FROM Locations l \n"
+				+ "WHERE NOT EXISTS \n"
+				+ "    (SELECT * FROM Event \n"
+				+ "     WHERE location_id = l.id \n"
+				+ "     AND ((? > datetime AND ? <= datetime_to) \n"
+				+ "     OR (? >= datetime AND ? < datetime_to) \n"
+				+ "     OR (? <= datetime AND ? >= datetime_to)))";
+		Log.i("Location","to=" + to);
+		Log.i("Location","from=" + from);
+		Cursor cursor = DB.get(sql,to,to,from,from,from,to);
+		return getAll(cursor);
 	}
 
 	private Location(Cursor cursor) {

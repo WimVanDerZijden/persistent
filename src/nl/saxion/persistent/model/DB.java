@@ -16,7 +16,7 @@ public class DB extends SQLiteOpenHelper
 	/**
 	 * Increment when DB script is changed
 	 */
-	private static final int DB_VERSION = 18;
+	private static final int DB_VERSION = 20;
 
 	private Context context;
 	private static DB db_helper;
@@ -51,8 +51,9 @@ public class DB extends SQLiteOpenHelper
 	private static String[] objectsToString(Object[] params)
 	{
 		String[] s_params = new String[params.length];
-		for (int n = 0; n < params.length; n++)
+		for (int n = 0; n < params.length; n++) {
 			s_params[n] = params[n].toString();
+		}
 		return s_params;
 	}
 
