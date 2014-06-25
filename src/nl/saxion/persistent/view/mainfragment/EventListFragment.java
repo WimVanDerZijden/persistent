@@ -151,6 +151,9 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 									else
 										Toast.makeText(getActivity(), "Error Signing out", Toast.LENGTH_SHORT).show();
 								}
+								else if(!events.get(groupPosition).isOpen()) {
+									Toast.makeText(getActivity(), "Event is full", Toast.LENGTH_SHORT).show();
+								}
 								else if(events.get(groupPosition).register(user))
 									Toast.makeText(getActivity(), "Signed up succesfully", Toast.LENGTH_SHORT).show();
 								else

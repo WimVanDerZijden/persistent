@@ -37,6 +37,7 @@ CREATE TABLE Event
 	,datetime3 INTEGER
 	,user_id INTEGER NOT NULL
 	,location_id INTEGER NOT NULL
+	,is_open INTEGER NOT NULL DEFAULT 1
 	,FOREIGN KEY (user_id) REFERENCES User(id)
 	,FOREIGN KEY (location_id) REFERENCES Locations(id)
 );
@@ -55,7 +56,7 @@ CREATE TABLE Invite
 );
 
 CREATE VIEW Event_v AS
-SELECT e.name, e.datetime, e.datetime_to, e.maxparticipants, e.minparticipants, e.description, e.datetime1, e.datetime2, e.datetime3, e.id, e.user_id, e.location_id, 
+SELECT e.name, e.datetime, e.datetime_to, e.maxparticipants, e.minparticipants, e.description, e.datetime1, e.datetime2, e.datetime3, e.id, e.user_id, e.location_id, e.is_open, 
 	(SELECT COUNT(*) FROM Invite i WHERE i.event_id = e.id) AS registered
 FROM Event e;
 
@@ -88,7 +89,7 @@ VALUES (8, 'Escher', 100);
 
 
 INSERT INTO event(id,name,datetime,datetime_to,maxparticipants,minparticipants,description,user_id,location_id) VALUES
-(1,'Voetbal', 1406030400000,1406030400000 + 60 * 60 * 1000,12,6,'Gezellig potje voetbal',1,1);
+(1,'Voetbal', 1406030400000,1406030400000 + 60 * 60 * 1000,1,1,'Gezellig potje voetbal',1,1);
 INSERT INTO event(id,name,datetime,datetime_to,maxparticipants,minparticipants,description,user_id,location_id) VALUES
 (2,'Social Media',1407030400000,1407030400000 + 60 * 60 * 1000,50,10,'Interessante lezing over social media impact',1,2);
 INSERT INTO event(id,name,datetime,datetime_to,maxparticipants,minparticipants,description,user_id,location_id) VALUES
