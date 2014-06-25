@@ -27,6 +27,7 @@ public class Event extends Table{
 	private Long datetime3;
 	
 	private Integer registered;
+	private boolean isOpen;
 	
 	///** The users who registered for this event */
 	//private List<User> users;
@@ -48,6 +49,7 @@ public class Event extends Table{
 		user = User.getById(cursor.getInt(10));
 		location = Location.getById(cursor.getInt(11));
 		registered = cursor.getInt(12);
+		isOpen = cursor.getInt(13) == 1;
 	}
 
 	public int getId() {
@@ -76,7 +78,7 @@ public class Event extends Table{
 	 */
 	public static List<Event> get(List<Filter> filters)
 	{
-		String sql = "SELECT name, datetime, datetime_to, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
+		String sql = "SELECT name, datetime, datetime_to, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered, is_open "
 				+ "FROM Event_v "
 				+ "WHERE";
 		List<Object> params = new ArrayList<Object>();
@@ -103,7 +105,7 @@ public class Event extends Table{
 	}
 	
 	public static Event getById(int id) {
-		Cursor cursor = DB.get("SELECT name, datetime, datetime_to, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered "
+		Cursor cursor = DB.get("SELECT name, datetime, datetime_to, maxparticipants, minparticipants, description, datetime1, datetime2, datetime3, id, user_id, location_id, registered, is_open "
 				+ "FROM Event_v "
 				+ "WHERE id = ?", id);
 		Event event = cursor.moveToFirst() ? new Event(cursor) : null;
@@ -126,6 +128,8 @@ public class Event extends Table{
 		try {
 			DB.doIt("INSERT INTO Invite (event_id, user_id, datetime) VALUES (?,?,?)",
 					getId(), user.getId(), System.currentTimeMillis());
+			registered++;
+			updateIsOpen();
 			return true;
 		}
 		catch (SQLiteException e) {
@@ -142,12 +146,28 @@ public class Event extends Table{
 	public boolean unRegister(User user){
 		try {
 			DB.doIt("DELETE FROM Invite WHERE user_id=?", user.getId());
+			registered--;
+			updateIsOpen();
 			return true;
 		} catch (SQLiteException e) {
 			Log.e("User", "SQL failed: " + e.getMessage());
 			return false;
 		}
-		
+	}
+	
+	public void updateIsOpen() {
+		if (getRegistered() < getMaxparticipants()) {
+			if (!isOpen()) {
+				DB.doIt("UPDATE Event SET is_open = 1 WHERE id = ?", getId());
+			}
+			isOpen = true;
+		}
+		else {
+			if (isOpen()) {
+				DB.doIt("UPDATE Event SET is_open = 0 WHERE id = ?", getId());
+			}
+			isOpen = false;
+		}
 	}
 	
 	public List<User> getUsers() {
@@ -227,6 +247,10 @@ public class Event extends Table{
 		return location;
 	}
 	
+	public boolean isOpen() {
+		return isOpen;
+	}
+
 	/**
 	 * User friendly display string for use in Spinners and such
 	 * 

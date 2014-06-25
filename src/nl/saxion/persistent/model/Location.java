@@ -80,8 +80,21 @@ public class Location extends Table{
 	 * @return locations
 	 */
 	public static List<Location> get(List<Filter> filters) {
-		// TODO implement filters
-		Cursor cursor = DB.get("SELECT name, capacity, id FROM Locations");
+		String sql = "SELECT name, capacity, id FROM Locations "
+				+ "WHERE";
+		List<Object> params = new ArrayList<Object>();
+		if (filters != null) {
+			for (Filter filter : filters) {
+				sql += filter.getSQL();
+				sql += " AND";
+				if (filter.getValue() != null)
+					params.add(filter.getValue());
+			}
+		}
+		// Remove the last word from the query (WHERE or AND)
+		sql = sql.substring(0, sql.lastIndexOf(" "));
+		sql += " ORDER BY name";
+		Cursor cursor = DB.get(sql, params.toArray());
 		return getAll(cursor);
 	}
 	

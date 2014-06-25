@@ -83,8 +83,6 @@ public class User extends Table {
 		// Remove the last word from the query (WHERE or AND)
 		sql = sql.substring(0, sql.lastIndexOf(" "));
 		sql += " ORDER BY name";
-		Log.e("User",params.toString());
-		Log.e("User",sql);
 		Cursor cursor = DB.get(sql, params.toArray());
 		return getAll(cursor);
 	}

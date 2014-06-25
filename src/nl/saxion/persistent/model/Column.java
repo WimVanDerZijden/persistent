@@ -20,11 +20,12 @@ public class Column
 		int n;
 		Column[] cols;
 		
-		cols = new Column[n = 6];
+		cols = new Column[n = 7];
 		cols[--n] = new Column("Initiator","user_id", TableName.USER);
 		cols[--n] = new Column("Location","location_id", TableName.LOCATION);
 		cols[--n] = new Column("Max Participants","maxparticipants", DataType.NUMBER);
 		cols[--n] = new Column("Min Participants","minparticipants", DataType.NUMBER);
+		cols[--n] = new Column("Open?","is_open",DataType.BOOLEAN);
 		//cols[--n] = new Column("Registered","registered", DataType.NUMBER);
 		cols[--n] = new Column("Date and time","datetime",DataType.TIMESTAMP);
 		cols[--n] = new Column("Name","name",DataType.TEXT);
@@ -36,6 +37,11 @@ public class Column
  		cols[--n] = new Column("Name","name", DataType.TEXT);
  		COLUMNS.put(TableName.USER, cols);
 		
+ 		cols = new Column[n = 2];
+ 		cols[--n] = new Column("Capacity","capacity",DataType.NUMBER);
+ 		cols[--n] = new Column("Name","name",DataType.TEXT);
+ 		COLUMNS.put(TableName.LOCATION, cols);
+ 		
 		Operator[] ops;
 		
 		ops = new Operator[n = 2];
