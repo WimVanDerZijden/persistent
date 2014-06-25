@@ -3,13 +3,9 @@ package nl.saxion.persistent.view;
 import java.util.List;
 
 import nl.saxion.persistent.R;
-import nl.saxion.persistent.R.id;
 import nl.saxion.persistent.model.User;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

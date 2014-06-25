@@ -35,6 +35,10 @@
             android:name="nl.saxion.persistent.view.FilterActivity"
             android:label="@string/title_activity_filter" >
         </activity>
+        <activity
+            android:name="nl.saxion.persistent.view.HelpActivity"
+            android:label="@string/title_activity_help" >
+        </activity>
     </application>
 
 </manifest>
