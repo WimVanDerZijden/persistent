@@ -152,7 +152,7 @@ public class Event extends Table{
 	}
 	
 	public List<User> getUsers() {
-		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
+		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id, u.is_thales FROM User_v u \n"
 				+ "INNER JOIN Invite i ON i.user_id = u.id AND i.event_id = ?", getId());
 		List<User> users = User.getAll(cursor);
 		// User.getAll() already closes the cursor
@@ -166,7 +166,7 @@ public class Event extends Table{
 	 * @return
 	 */
 	public boolean isRegistered(User user) {
-		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id FROM User u \n"
+		Cursor cursor = DB.get("SELECT u.name, u.email, u.photo, u.id, u.is_thales FROM User_v u \n"
 				+ "INNER JOIN Invite i ON i.user_id = u.id AND i.event_id = ? \n"
 				+ "WHERE u.id = ?",
 				getId(), user.getId());

@@ -20,6 +20,7 @@ public class User extends Table {
 	// private String phonenumber;
 	private String email;
 	private Bitmap photo;
+	private boolean isThales;
 
 	/**
 	 * Return User if email password is correct.
@@ -31,7 +32,7 @@ public class User extends Table {
 	 * @return
 	 */
 	public static User get(String email, String password) {
-		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User WHERE Email = ? AND password = ?",
+		Cursor cursor = DB.get("SELECT name, email, photo, id, is_thales FROM User_v WHERE Email = ? AND password = ?",
 				email, password);
 		User user = cursor.moveToFirst() ? new User(cursor) : null;
 		cursor.close();
@@ -45,7 +46,7 @@ public class User extends Table {
 	 * @return
 	 */
 	public static User getById(int id) {
-		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User WHERE id = ?", id);
+		Cursor cursor = DB.get("SELECT name, email, photo, id, is_thales FROM User_v WHERE id = ?", id);
 		User user = cursor.moveToFirst() ? new User(cursor) : null;
 		cursor.close();
 		return user;
@@ -70,7 +71,7 @@ public class User extends Table {
 	
 	public static List<User> get(List<Filter> filters) {
 		// TODO impl filters
-		Cursor cursor = DB.get("SELECT name, email, photo, id FROM User");
+		Cursor cursor = DB.get("SELECT name, email, photo, id, is_thales FROM User_v");
 		return getAll(cursor);		
 	}
 	
@@ -114,6 +115,7 @@ public class User extends Table {
 		name = cursor.getString(0);
 		email = cursor.getString(1);
 		id = cursor.getInt(3);
+		isThales = cursor.getInt(4) == 1;
 		try {
 			byte[] photo_bytes = cursor.getBlob(2);
 			if (photo_bytes != null && photo_bytes.length > 0)
@@ -138,6 +140,10 @@ public class User extends Table {
 	
 	public int getId() {
 		return id;
+	}
+
+	public boolean isThales() {
+		return isThales;
 	}
 
 	public boolean setName(String name) {

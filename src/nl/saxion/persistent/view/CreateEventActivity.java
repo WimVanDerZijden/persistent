@@ -172,29 +172,6 @@ public class CreateEventActivity extends Activity implements
 		updateLocationSpinner();
 	}
 
-	public void showTimePicker(final DialogType dialogType) {
-		this.dialogType = dialogType;
-		current_dialog = new DialogFragment() {
-			@Override
-			public Dialog onCreateDialog(Bundle savedInstanceState) {
-				
-				Calendar c = null;
-				if (dialogType == DialogType.TimeFrom)
-					c = timeFrom == null ? Calendar.getInstance() : timeFrom;
-				else if (dialogType == DialogType.TimeTo)
-					c = timeTo == null ? Calendar.getInstance() : timeTo;
-					
-				int hour = c.get(Calendar.HOUR_OF_DAY);
-				int minute = c.get(Calendar.MINUTE);
-
-				// Create a new instance of TimePickerDialog and return it
-				return new TimePickerDialog(getActivity(), CreateEventActivity.this, hour, minute,
-						android.text.format.DateFormat.is24HourFormat(getActivity()));
-			}
-		};
-		current_dialog.show(getFragmentManager(), "datePicker");
-	}
-
 	@Override
 	public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 		Calendar updatedTime = null;
@@ -228,11 +205,36 @@ public class CreateEventActivity extends Activity implements
 	}
 
 	public void time1FromPressed(View v) {
-		showTimePicker(DialogType.TimeFrom);
+		dialogType = DialogType.TimeFrom;
+		current_dialog = new DialogFragment() {
+			@Override
+			public Dialog onCreateDialog(Bundle savedInstanceState) {
+				int hours = timeFrom == null ? Calendar.getInstance().get(Calendar.HOUR_OF_DAY) : timeFrom.get(Calendar.HOUR_OF_DAY);
+				int minutes = timeFrom == null ? 0 : timeFrom.get(Calendar.MINUTE);
+				return new TimePickerDialog(getActivity(), CreateEventActivity.this, hours, minutes,
+						android.text.format.DateFormat.is24HourFormat(getActivity()));
+			}
+		};
+		current_dialog.show(getFragmentManager(), "datePicker");
 	}
 
 	public void time1ToPressed(View v) {
-		showTimePicker(DialogType.TimeTo);
+		if (timeFrom == null) {
+			Toast.makeText(this, "Set Time From first", Toast.LENGTH_SHORT).show();
+		}
+		else {
+			dialogType = DialogType.TimeTo;
+			current_dialog = new DialogFragment() {
+				@Override
+				public Dialog onCreateDialog(Bundle savedInstanceState) {
+					int hours = timeTo == null ? timeFrom.get(Calendar.HOUR_OF_DAY) + 1 : timeTo.get(Calendar.HOUR_OF_DAY);
+					int minutes = timeTo == null ? timeFrom.get(Calendar.MINUTE) : timeTo.get(Calendar.MINUTE);
+					return new TimePickerDialog(getActivity(), CreateEventActivity.this, hours, minutes,
+							android.text.format.DateFormat.is24HourFormat(getActivity()));
+				}
+			};
+			current_dialog.show(getFragmentManager(), "datePicker");
+		}
 	}
 
 	public void minNrPressed(View v) {

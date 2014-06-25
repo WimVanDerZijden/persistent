@@ -32,7 +32,7 @@ public class Filter
 			Column[] cols = Column.get(tableName);
 			if (tableName == TableName.EVENT) {
 				// TODO fix this filter (Create a view Event_v with a bool for IsInFuture)
-				Filter filter = new Filter(cols[0], Operator.GREATER_THAN, System.currentTimeMillis());
+				Filter filter = new Filter(cols[1], Operator.GREATER_THAN, System.currentTimeMillis());
 				filters.add(filter);
 			}
 			else {

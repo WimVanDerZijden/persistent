@@ -29,6 +29,9 @@ public class Column
 		cols[--n] = new Column("Date and time","datetime",DataType.TIMESTAMP);
 		cols[--n] = new Column("Name","name",DataType.TEXT);
  		COLUMNS.put(TableName.EVENT, cols);
+ 		
+ 		cols = new Column[n = 2];
+ 		
 		
 		Operator[] ops;
 		

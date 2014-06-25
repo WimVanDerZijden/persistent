@@ -5,6 +5,7 @@ DROP TABLE IF EXISTS User;
 DROP TABLE IF EXISTS Locations;
 
 DROP VIEW IF EXISTS Event_v;
+DROP VIEW IF EXISTS User_v;
 
 CREATE TABLE User
 (
@@ -55,8 +56,13 @@ CREATE TABLE Invite
 
 CREATE VIEW Event_v AS
 SELECT e.name, e.datetime, e.datetime_to, e.maxparticipants, e.minparticipants, e.description, e.datetime1, e.datetime2, e.datetime3, e.id, e.user_id, e.location_id, 
-(SELECT COUNT(*) FROM Invite i WHERE i.event_id = e.id) AS registered
+	(SELECT COUNT(*) FROM Invite i WHERE i.event_id = e.id) AS registered
 FROM Event e;
+
+CREATE VIEW User_v AS
+SELECT name, email, password, photo, id,
+	(CASE WHEN LOWER(email) LIKE '%thalesgroup.com' THEN 1 ELSE 0 END) AS is_thales
+FROM User;
 
 INSERT INTO User (id, name, email, password) VALUES
 (1, 'wim','wim@wim.com','wim');

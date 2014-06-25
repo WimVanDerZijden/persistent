@@ -5,40 +5,25 @@
     android:orientation="vertical"
     android:background="#EEE" >
     
-    <TextView
-        android:text="@string/profile_namefield"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_margin="10dp"/>
-    
     <EditText
         android:id="@+id/register_name"
         android:inputType="text" 
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
-         />
-    
-    <TextView
-        android:text="@string/profile_email"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content" />
+        android:hint="@string/profile_namefield"  />
     
     <EditText 
         android:id="@+id/register_email"
         android:inputType="textEmailAddress" 
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent" />
-
-    <TextView
-        android:text="@string/profile_passwordfield"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_margin="10dp"/>
+        android:layout_width="fill_parent"
+        android:hint="@string/prompt_email" />
     
     <EditText
         android:id="@+id/register_password"
         android:inputType="textPassword"
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"/>
+        android:layout_width="fill_parent"
+        android:hint="@string/prompt_password"/>
     
 </LinearLayout>

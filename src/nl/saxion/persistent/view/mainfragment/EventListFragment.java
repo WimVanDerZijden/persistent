@@ -11,7 +11,7 @@ import nl.saxion.persistent.model.Event;
 import nl.saxion.persistent.model.User;
 import nl.saxion.persistent.model.Table.TableName;
 import nl.saxion.persistent.view.MainActivity;
-import nl.saxion.persistent.view.MyArrayAdapter;
+import nl.saxion.persistent.view.UserAdapter;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -95,7 +95,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 			secList.add(description);
 			//Adds the second item in the child list
 			HashMap<String, String> date = new HashMap<String, String>();
-			date.put("Sub Item", getString(R.string.people));
+			date.put("Sub Item", getString(R.string.people) + " (" + event.getRegistered() + ")");
 			secList.add(date);
 			//Adds the third item in the child list
 			HashMap<String, String> time = new HashMap<String, String>();
@@ -147,14 +147,14 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 							public void onClick(DialogInterface dialog, int which) {
 								if(!signUp){
 									if(events.get(groupPosition).unRegister(user))
-										Toast.makeText(getActivity(), "Signed out", Toast.LENGTH_LONG).show();
+										Toast.makeText(getActivity(), "Signed out", Toast.LENGTH_SHORT).show();
 									else
-										Toast.makeText(getActivity(), "Error Signing out", Toast.LENGTH_LONG).show();
+										Toast.makeText(getActivity(), "Error Signing out", Toast.LENGTH_SHORT).show();
 								}
 								else if(events.get(groupPosition).register(user))
-									Toast.makeText(getActivity(), "Signed up succesfully", Toast.LENGTH_LONG).show();
+									Toast.makeText(getActivity(), "Signed up succesfully", Toast.LENGTH_SHORT).show();
 								else
-									Toast.makeText(getActivity(), "Error while signing up", Toast.LENGTH_LONG).show();
+									Toast.makeText(getActivity(), "Error while signing up", Toast.LENGTH_SHORT).show();
 								refresh();
 							}
 						})
@@ -178,7 +178,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 	private void createPeopleSignedUpDialog(int groupPosition) {
 		final ListView peopleListView = new ListView(getActivity());
 		if (events.get(groupPosition).getUsers().size() > 0) {
-			MyArrayAdapter aa = new MyArrayAdapter(getActivity(), events.get(groupPosition).getUsers());
+			UserAdapter aa = new UserAdapter(getActivity(), events.get(groupPosition).getUsers());
 			peopleListView.setAdapter(aa);
 			final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
 					.setView(peopleListView)
@@ -206,7 +206,7 @@ public class EventListFragment extends MainFragment implements OnChildClickListe
 		Event event = events.get(groupPosition);
 		DateFormat tf = DateFormat.getTimeInstance(DateFormat.SHORT);
 		final String dialogMessage = "Description:" + event.getDescription()
-				+ "\nTime: " + tf.format(event.getDatetime()) + " - " + tf.format(event.getDatetime() + event.getDateTimeTo())
+				+ "\nTime: " + tf.format(event.getDatetime()) + " - " + tf.format(event.getDateTimeTo())
 				+ "\nLocation: " + event.getLocation().getName()
 				+ "\nInitiator: " + event.getUser().getName()
 				+ "\nMin/Max Participants: " + event.getMinparticipants() + "/" + event.getMaxparticipants();
