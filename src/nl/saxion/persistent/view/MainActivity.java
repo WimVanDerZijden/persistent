@@ -123,7 +123,10 @@ public class MainActivity extends Activity
 			// decide what to show in the action bar.
 			int menuId = -1;
 			if (mTitle.equals(getString(R.string.title_section1)))
-				menuId = R.menu.event;
+				if(getUser().isThales())
+					menuId = R.menu.event_thales;
+				else
+					menuId = R.menu.event;
 			else if (mTitle.equals(getString(R.string.title_section2)))
 				menuId = R.menu.location;
 			else if (mTitle.equals(getString(R.string.title_section3)))
