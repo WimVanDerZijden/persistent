@@ -8,6 +8,11 @@
         android:title="@string/action_filter"
         android:icon="@android:drawable/ic_menu_search"/>
     <item
+        android:id="@+id/action_create_event"
+        android:showAsAction="withText|ifRoom"
+        android:title="@string/action_create_event"
+        android:icon="@android:drawable/ic_menu_add"/>
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="200"
         android:showAsAction="never"
