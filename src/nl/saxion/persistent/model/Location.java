@@ -114,8 +114,6 @@ public class Location extends Table{
 				+ "     AND ((? > datetime AND ? <= datetime_to) \n"
 				+ "     OR (? >= datetime AND ? < datetime_to) \n"
 				+ "     OR (? <= datetime AND ? >= datetime_to)))";
-		Log.i("Location","to=" + to);
-		Log.i("Location","from=" + from);
 		Cursor cursor = DB.get(sql,to,to,from,from,from,to);
 		return getAll(cursor);
 	}
