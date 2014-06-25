@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.saxion.persistent.R;
-import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.model.Table.TableName;
+import nl.saxion.persistent.model.Filter;
 import nl.saxion.persistent.model.User;
 import nl.saxion.persistent.view.UserAdapter;
 import android.os.Bundle;

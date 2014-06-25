@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.saxion.persistent.controller.Filter;
 import nl.saxion.persistent.view.mainfragment.LoginFragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
