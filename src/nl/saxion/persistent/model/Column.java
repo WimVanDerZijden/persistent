@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import nl.saxion.persistent.controller.Filter.Operator;
+import nl.saxion.persistent.model.Filter.Operator;
 import nl.saxion.persistent.model.Table.TableName;
 
 public class Column

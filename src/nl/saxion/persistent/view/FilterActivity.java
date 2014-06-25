@@ -6,10 +6,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import nl.saxion.persistent.R;
-import nl.saxion.persistent.controller.Filter;
-import nl.saxion.persistent.controller.Filter.Operator;
 import nl.saxion.persistent.model.Column;
+import nl.saxion.persistent.model.Filter;
 import nl.saxion.persistent.model.Column.DataType;
+import nl.saxion.persistent.model.Filter.Operator;
 import nl.saxion.persistent.model.Table;
 import nl.saxion.persistent.model.Table.TableName;
 import android.app.ActionBar;

@@ -3,7 +3,6 @@ package nl.saxion.persistent.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.saxion.persistent.controller.Filter;
 import android.database.Cursor;
 import android.util.Log;
 /**

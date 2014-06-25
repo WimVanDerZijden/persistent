@@ -1,12 +1,10 @@
-package nl.saxion.persistent.controller;
+package nl.saxion.persistent.model;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.saxion.persistent.model.Column;
 import nl.saxion.persistent.model.Column.DataType;
-import nl.saxion.persistent.model.Table;
 import nl.saxion.persistent.model.Table.TableName;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -108,7 +106,10 @@ public class Filter
 	{
 		this.column = column;
 		this.operator = operator;
-		this.value = value;
+		if (column.getDataType() == DataType.TEXT)
+			this.value = value.toString().trim();
+		else
+			this.value = value;
 	}
 	
 	public String getSQL()

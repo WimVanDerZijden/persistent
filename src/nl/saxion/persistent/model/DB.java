@@ -16,7 +16,7 @@ public class DB extends SQLiteOpenHelper
 	/**
 	 * Increment when DB script is changed
 	 */
-	private static final int DB_VERSION = 20;
+	private static final int DB_VERSION = 21;
 
 	private Context context;
 	private static DB db_helper;
