@@ -9,7 +9,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:gravity="center"
-        android:contentDescription="profile_pic"
+        android:contentDescription="@string/profile_pic"
         android:src="@drawable/empty_profile_picture" />
 
     <TextView
@@ -27,6 +27,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:gravity="center"
-        android:contentDescription="is_thales" />
+        android:contentDescription="@string/is_thales" />
 
 </LinearLayout>

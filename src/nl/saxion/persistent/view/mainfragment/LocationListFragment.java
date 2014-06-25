@@ -7,7 +7,6 @@ import nl.saxion.persistent.R;
 import nl.saxion.persistent.model.Filter;
 import nl.saxion.persistent.model.Location;
 import nl.saxion.persistent.model.Table.TableName;
-import nl.saxion.persistent.model.User;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
