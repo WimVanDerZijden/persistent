@@ -74,8 +74,8 @@ public class Filter
 		LESS_THAN_OR_EQUAL(" <= ", "at most"),
 		LIKE(" LIKE ", "contains"),
 		NOT_LIKE(" NOT LIKE ", "doesn't contain"),
-		IS_TRUE(" = TRUE ", "Yes"),
-		IS_FALSE(" = FALSE ", "No"),
+		IS_TRUE(" = 1 ", "Yes"),
+		IS_FALSE(" = 0 ", "No"),
 		BEFORE(" < ", "before"),
 		AFTER(" > ", "after");
 
@@ -110,14 +110,14 @@ public class Filter
 		this.operator = operator;
 		this.value = value;
 	}
-
+	
 	public String getSQL()
 	{
 		if (column.getDataType() == DataType.TEXT)
 			return " UPPER(" + column.getColumnName() + ")" + operator.getSQL() + "UPPER(?)";
 		if (column.getDataType() == DataType.BOOLEAN)
 			return " " + column.getColumnName() + operator.getSQL();
-		// Default (Reference, )
+		// Default (Reference, Date, Number)
 		return " " + column.getColumnName() + operator.getSQL() + "?";
 	}
 
@@ -151,12 +151,10 @@ public class Filter
 			result += value.toString().substring(1, value.toString().length() - 1);
 			break;
 		case BOOLEAN:
+			// value is included in operator, so nothing to do here
 			break;
 		}
-		Log.i("Filter", result);
-		Spanned s = Html.fromHtml(result);
-		Log.i("Filter_Spanned", s.toString());
-		return s;	
+		return Html.fromHtml(result);
 	}
 
 	/**

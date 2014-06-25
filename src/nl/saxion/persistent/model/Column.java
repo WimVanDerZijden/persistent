@@ -30,8 +30,11 @@ public class Column
 		cols[--n] = new Column("Name","name",DataType.TEXT);
  		COLUMNS.put(TableName.EVENT, cols);
  		
- 		cols = new Column[n = 2];
- 		
+ 		cols = new Column[n = 3];
+ 		cols[--n] = new Column("Thales Employee?","is_thales", DataType.BOOLEAN);
+ 		cols[--n] = new Column("Email", "email", DataType.TEXT);
+ 		cols[--n] = new Column("Name","name", DataType.TEXT);
+ 		COLUMNS.put(TableName.USER, cols);
 		
 		Operator[] ops;
 		

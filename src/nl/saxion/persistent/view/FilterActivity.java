@@ -274,6 +274,8 @@ public class FilterActivity extends Activity
 					}
 					break;
 				case BOOLEAN:
+					// Value null because the value is included in the operator (isTrue/isFalse)
+					filters.add(new Filter(column, operator, null));
 					break;
 				}
 				// Save filters to local preferences and clear all errors

@@ -70,9 +70,24 @@ public class User extends Table {
 	 */
 	
 	public static List<User> get(List<Filter> filters) {
-		// TODO impl filters
-		Cursor cursor = DB.get("SELECT name, email, photo, id, is_thales FROM User_v");
-		return getAll(cursor);		
+		String sql = "SELECT name, email, photo, id, is_thales FROM User_v "
+				+ "WHERE";
+		List<Object> params = new ArrayList<Object>();
+		if (filters != null) {
+			for (Filter filter : filters) {
+				sql += filter.getSQL();
+				sql += " AND";
+				if (filter.getValue() != null)
+					params.add(filter.getValue());
+			}
+		}
+		// Remove the last word from the query (WHERE or AND)
+		sql = sql.substring(0, sql.lastIndexOf(" "));
+		sql += " ORDER BY name";
+		Log.e("User",params.toString());
+		Log.e("User",sql);
+		Cursor cursor = DB.get(sql, params.toArray());
+		return getAll(cursor);
 	}
 	
 	/**

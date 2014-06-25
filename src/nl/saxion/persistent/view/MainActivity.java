@@ -127,7 +127,7 @@ public class MainActivity extends Activity
 			else if (mTitle.equals(getString(R.string.title_section2)))
 				menuId = R.menu.main;
 			else if (mTitle.equals(getString(R.string.title_section3)))
-				menuId = R.menu.main;
+				menuId = R.menu.user;
 			else if (mTitle.equals(getString(R.string.title_section4)))
 				menuId = R.menu.main;
 			else if (mTitle.equals(getString(R.string.title_login)))
@@ -173,6 +173,13 @@ public class MainActivity extends Activity
 			Intent intent = new Intent(this,FilterActivity.class);
 			intent.putExtra("TableName", TableName.EVENT);
 			startActivity(intent);
+			return true;
+		}
+		if (id == R.id.action_filter_user) {
+			Intent intent = new Intent(this,FilterActivity.class);
+			intent.putExtra("TableName", TableName.USER);
+			startActivity(intent);
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
