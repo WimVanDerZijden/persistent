@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="title_create_account">Creating a new account</string>
+	<string name="title_join_event">Joining an existing event</string>
+	<string name="title_create_event">Creating your own event</string>
+	<string name="title_edit_account">Edit account settings</string>
+	<string name="title_adding_filters">Addings filters to lists</string>
+	
+	<string name="help_general">Click on the buttons below for help for those subjects</string>
+	<string name="help_create_account">To create an account click the register button on the top of the screen. Fill in your name, email address and
+	     a password that you want to use for your new account. You can use any email address but if you use a Thales address you will be able to create
+	     you own events. Accounts with other mail addresses wil only be able to join existing events.\n\nIf you\'re done filling in your details, press OK
+	     and you will be logged in automaticlly</string>
+	<string name="help_join_event">If you want to join an event, click on it first. This will show 3 buttons:\n - More Details: Will show you more information
+	    on the event like: a description, what time the event will be, the location of the event and the min and max amount of participants\n
+	     - People Currently Signed Up: Will show a list of the people who will participate in the event, if there are already people signed up\n
+	      - Sign Up: Pressings this will sign you up for an event.</string>
+	<string name="help_create_event">To create an event you must have a Thales account. You will automaticlly have a Thales account if you used your
+	    thales email address when creating your account\n\nIf you press the plus symbool on the top of the screen you will go to the event creation screen
+	    Simply fill in all the fields and press the OK button on the top of the screen. You event will now show up in the Events tab</string>
+	<string name="help_edit_account">If you want to edit some information of your account, go to the navigation drawer by clicking on the right of the 
+	    top bar of by swiping to the right from the left side of your screen. Click on Profile.\n\nHere you can change your name and password by clicking
+	    the pen on the right and you can set a profile picture by clicking on the current profile picture</string>
+	<string name="help_adding_filters">If you want to filter events, locations or people on certain things, click the magnifying glass on the top of the
+	    screen. On this screen you can add or remove filters. If for example you add the filter name \"contains abc\" and go back to the list, you will only
+	    find events, locations or people where the name contains abc.\n\nYou can add as many filters as you want, the current filtes will be shown below the
+	    create button. You can remove filters by clicking the red x to the right of it</string>
+    
+</resources>
