@@ -32,6 +32,7 @@ public class PeopleListFragment extends MainFragment {
 		return rootView;
 	}
 	
+	@Override
 	public void onStart() {
 		List<Filter> filters = Filter.get(TableName.USER, getActivity());
 		List<User> new_users = User.get(filters);

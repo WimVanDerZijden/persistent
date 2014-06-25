@@ -36,6 +36,11 @@ public class Column
  		cols[--n] = new Column("Name","name", DataType.TEXT);
  		COLUMNS.put(TableName.USER, cols);
 		
+ 		cols = new Column[n = 2];
+ 		cols[--n] = new Column("Capacity","capacity",DataType.NUMBER);
+ 		cols[--n] = new Column("Name","name",DataType.TEXT);
+ 		COLUMNS.put(TableName.LOCATION, cols);
+ 		
 		Operator[] ops;
 		
 		ops = new Operator[n = 2];
